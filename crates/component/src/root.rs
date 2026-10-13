@@ -18,6 +18,10 @@ use gpui::{
 use gpui_base::{TextSelection, TextSelectionScopeId, motion::Presence};
 use std::{any::TypeId, cell::Cell, rc::Rc};
 
+// Match ShellRoot's toast layer: action results remain above content overlays
+// and popups, while tooltips keep their higher priority.
+const NOTIFICATION_PRIORITY: usize = gpui_base::POPUP_PRIORITY + 1;
+
 pub(crate) fn init(cx: &mut App) {
     gpui_base::Root::register_plugin::<WindowState>(cx, WindowState::new);
 }
@@ -210,7 +214,7 @@ impl WindowState {
                             .child(root.read(cx).notification.clone()),
                     ),
             )
-            .with_priority(priority),
+            .with_priority(priority.max(NOTIFICATION_PRIORITY)),
         )
     }
 
