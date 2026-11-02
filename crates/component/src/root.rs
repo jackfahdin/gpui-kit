@@ -803,6 +803,17 @@ struct WindowStateLayers {
 impl RenderOnce for WindowStateLayers {
     fn render(self, window: &mut Window, cx: &mut App) -> impl IntoElement {
         let root = self.root;
+        // Exit animations remain visible after their dialog releases input.
+        let dialog_input = if root
+            .read(cx)
+            .active_dialogs
+            .iter()
+            .any(|dialog| !dialog.closing)
+        {
+            gpui::NativeOverlayInput::Modal
+        } else {
+            gpui::NativeOverlayInput::Passive
+        };
         div()
             .absolute()
             .inset_0()
@@ -813,7 +824,7 @@ impl RenderOnce for WindowStateLayers {
             )
             .children(
                 WindowState::dialog_layer(&root, window, cx)
-                    .map(|layer| gpui::native_overlay(layer, gpui::NativeOverlayInput::Modal)),
+                    .map(|layer| gpui::native_overlay(layer, dialog_input)),
             )
             .children(WindowState::notification_layer(&root, window, cx))
     }
