@@ -12,7 +12,7 @@ use gpui::{
     InteractiveElement as _, IntoElement, ParentElement as _, Pixels, Render, SharedString,
     StatefulInteractiveElement, StyleRefinement, Styled, Subscription, SystemNotification,
     SystemNotificationResponse, WeakEntity, Window, WindowId, div, prelude::FluentBuilder, px,
-    relative,
+    relative, rems,
 };
 use gpui_base::{
     Toast as BaseToast, ToastManager, ToastMotion, ToastOptions, ToastStack, ToastStackState,
@@ -418,6 +418,13 @@ impl Render for Notification {
         };
         let has_icon = icon.is_some();
         let placement = self.placement.unwrap_or(cx.theme().notification.placement);
+        let first_line_height = self
+            .style
+            .text
+            .line_height
+            .unwrap_or(window.text_style().line_height)
+            .to_pixels(rems(0.875).into(), window.rem_size())
+            .round();
 
         BaseToast::new("notification")
             .transition_status(transition_status)
@@ -435,14 +442,25 @@ impl Render for Notification {
             .px_4()
             .gap_3()
             .refine_style(&self.style)
-            .when_some(icon, |this, icon| {
-                this.child(div().absolute().top(px(18.)).left_4().child(icon))
-            })
             .child(
                 v_flex()
+                    .relative()
                     .flex_1()
                     .overflow_hidden()
                     .when(has_icon, |this| this.pl_6())
+                    .when_some(icon, |this, icon| {
+                        // Follow the first text line, including when the message wraps.
+                        this.child(
+                            div()
+                                .absolute()
+                                .top_0()
+                                .left_0()
+                                .h(first_line_height)
+                                .flex()
+                                .items_center()
+                                .child(icon),
+                        )
+                    })
                     .when_some(self.title.clone(), |this, title| {
                         this.child(div().text_sm().font_semibold().child(title))
                     })
