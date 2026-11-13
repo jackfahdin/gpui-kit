@@ -1,5 +1,84 @@
 # NyaTerm fork notes
 
+## 2026-11-07 align GPUI prepaint accessibility rollback
+
+Pin all six Zed workspace dependencies and existing lockfile sources to
+`a45a77c08a7cd5ed364778eb84961e1bde650b73` on `nyakang/zed:nyaterm`.
+That revision rolls back accessibility nodes, focus and bounds when a virtual
+list retries prepaint for autoscroll. It fixes the duplicate-node panic
+reproduced by NyaTerm's AI-history disclosure controls. Updating Kit together
+with the consuming application preserves a single GPUI source and compatible
+component types. Package versions, component APIs and persisted formats are
+unchanged.
+
+The Zed patch passed 453 library tests on Linux (two ignored), including
+checkpoint and up/down autoscroll regressions. Manifest/lock alignment and
+locked Cargo metadata validate this dependency-only Kit update. Consuming
+NyaTerm tests exercise the disclosure integration against the published pins.
+Native Windows acceptance remains unverified in this Linux environment.
+
+## 2026-11-06 prepare serialized Windows component validation
+
+Run the branch Base/Component workflow on Linux and Windows with serialized
+GPUI tests. Linux bootstrap is conditional; Base invocations enable
+`test-support` because its observation tests use that module. The complete
+Base run already includes those regressions, so remove the duplicate step.
+
+Workflow inspection and `git diff --check` passed. This is a validation
+configuration change, not a claim of Windows results: Actions is disabled
+for the fork and Windows automation/manual acceptance are pending.
+
+## 2026-11-06 keep number-input accessibility focus on the editor
+
+The actual-tree regressions run on the patched native Zed backend. Exclude
+them from `gpui-fast` and wasm test configurations, whose published test
+contexts do not expose the fork's accessibility simulation helpers. This
+test-only guard keeps those configurations independent of fork-only test APIs.
+The extra `gpui-fast,test-support --tests` check is blocked by 11 pre-existing
+`NativeOverlayInput`/`native_overlay` errors in unchanged Component `root.rs`:
+the published Fast backend lacks the fork's native-overlay APIs. This does
+not establish a passing Fast configuration; default-backend validation is
+recorded below and Fast migration is outside this patch.
+After the test guard, both native accessibility regressions passed again and
+locked metadata resolved the aligned Zed revision successfully.
+
+Give each number-input frame an entity-keyed independent focus scope while
+its inner editor retains actual editing focus. The outer SpinButton keeps
+numeric values, step actions, and action bubbling, delegates accessibility
+Focus to the enabled editor, and contributes no Tab stop. Unhandled frame and
+step-button pointer presses delegate focus after child selection handlers,
+preventing GPUI's default frame focus from stealing the editor's focus.
+Public component interfaces and persisted values remain compatible.
+
+The new Component regressions activate the platform accessibility client and
+draw the real tree. Before the fix, selecting a number reproduced
+`set_focus called more than once in a single frame` in GPUI's a11y builder.
+Afterward, click/double-click/drag selection, blur/re-focus, multiple inputs,
+Tab navigation, keyboard/button stepping, and disabled accessibility Focus
+pass with one focused TextInput and preserved SpinButton semantics.
+
+Linux validation through the writable-source consumer workspace: Base library
+1,554 passed, Component library 755 passed, and both Base external tests passed.
+Existing Base tests cover step-button press focus and numeric bounds.
+Touched-file rustfmt and `git diff --check` passed. Windows automated and real
+settings/titlebar/native RDP acceptance remain unverified: no execution
+endpoint is available and fork Actions is disabled.
+
+## 2026-11-06 align GPUI accessibility and native hit-testing fixes
+
+Pin all six Zed workspace dependencies and lockfile sources to
+`573a85755ffb65684ddb88f71f560846c61f92b6` on `nyakang/zed:nyaterm`.
+That revision exposes test-platform accessibility activation/actions and
+publishes native window-control hit tests without borrowing App. Keep the
+consumer and Kit on the same GPUI types; no package versions or data formats
+change.
+
+Validation: `cargo +stable metadata --locked --format-version 1` passed.
+Manifest/lock inspection confirms all six aliases and the sole Zed lock source
+use the published full revision. Integration tests exercise the writable fork
+sources through a narrow consumer-style workspace, excluding unrelated Zed
+root patches.
+
 ## 2026-11-05 align native overlay modal ordering
 
 Pin all six Zed dependencies to `6cda7bc3f0e0ab64be33627851f56f8d908fe844`
@@ -534,3 +613,28 @@ and workspace formatting passed. NyaTerm all-target compilation and the three
 focused sidebar, plugin cancellation and security replacement regressions
 passed with this checkout. Final published-source workspace validation is
 recorded in the consuming report.
+
+## 2026-11-11 align notification status icons with the first text line
+
+Fix <https://github.com/nyakang/nyaterm/issues/1231>: a fixed 18px top offset
+placed the status icon below a single-line message's center. Anchor the icon
+inside the text column and center it in the resolved, rounded `text_sm` line
+height instead. This follows inherited or instance line-height overrides and
+the window's rem size while keeping title, wrapped-message, and action layout
+unchanged. Keep the icon outside the clipped text content so large custom
+icons and short custom content retain their existing overflow behavior.
+Public APIs and persisted data are unchanged.
+
+Windows validation:
+
+- `cargo check -p gpui-component --offline` passed.
+- `cargo test -p gpui-component --lib notification:: --offline -- --test-threads=1`
+  passed (18 tests).
+- `cargo fmt --all -- --check` passed.
+- `bun script/check-gpui-pin.ts` passed.
+- `git diff --check` passed.
+
+Cargo commands used the consuming NyaTerm workspace's target directory.
+Native screenshot verification was unavailable because the Computer Use
+native pipe could not be connected. NyaTerm validates the published revision
+with its workspace checks.
