@@ -652,3 +652,13 @@ Cargo commands used the consuming NyaTerm workspace's target directory.
 Native screenshot verification was unavailable because the Computer Use
 native pipe could not be connected. NyaTerm validates the published revision
 with its workspace checks.
+
+
+## Keep planar-video consumer on one GPUI revision — 2026-11-15
+
+Pin all Zed dependencies to 2302414991d9495c2b0c6a1b5534689a58da06c4,
+including the new bounded I420 video APIs. A partial consumer-only bump creates
+two incompatible GPUI type graphs; this companion pin preserves one graph.
+No component behavior changes. NyaTerm app check and 35 Android desktop tests
+passed with the equivalent local GPUI override before publishing the revision.
+The consuming workspace validates the final published dependency graph.
