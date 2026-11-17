@@ -662,3 +662,12 @@ two incompatible GPUI type graphs; this companion pin preserves one graph.
 No component behavior changes. NyaTerm app check and 35 Android desktop tests
 passed with the equivalent local GPUI override before publishing the revision.
 The consuming workspace validates the final published dependency graph.
+
+
+## File clipboard consumer revision — 2026-11-17
+
+Pin all Zed dependencies to df44bb4fa7f95e9159a9558a4835f918a02e043e so NyaTerm and GPUI Kit
+share one GPUI type graph with deferred Windows file clipboard support.
+No component behavior changes. Validation: the equivalent consuming-workspace
+local override compiled the desktop and passed 16 Windows native drag/clipboard
+tests; final published dependency graph is checked by the consuming workspace.
