@@ -15,8 +15,8 @@ use gpui::{
     relative, rems,
 };
 use gpui_base::{
-    Toast as BaseToast, ToastManager, ToastMotion, ToastOptions, ToastStack, ToastStackState,
-    ToastTransitionStatus,
+    LogicalStyledExt as _, Toast as BaseToast, ToastManager, ToastMotion, ToastOptions, ToastStack,
+    ToastStackState, ToastTransitionStatus,
 };
 
 use crate::{
@@ -408,7 +408,7 @@ impl Render for Notification {
         let action = self
             .action_builder
             .clone()
-            .map(|builder| builder(self, window, cx).small().mr_3p5());
+            .map(|builder| builder(self, window, cx).small().me(rems(0.875), cx));
 
         let transition_status = self.transition_status;
         let closing = transition_status == ToastTransitionStatus::Ending;
@@ -429,6 +429,7 @@ impl Render for Notification {
         BaseToast::new("notification")
             .transition_status(transition_status)
             .h_flex()
+            .flex_row_dir(cx)
             .group("")
             .occlude()
             .relative()
@@ -453,7 +454,7 @@ impl Render for Notification {
                             div()
                                 .absolute()
                                 .top_0()
-                                .left_0()
+                                .inset_s(px(0.), cx)
                                 .h(first_line_height)
                                 .flex()
                                 .items_center()
@@ -463,7 +464,7 @@ impl Render for Notification {
                     .child(
                         v_flex()
                             .overflow_hidden()
-                            .when(has_icon, |this| this.pl_6())
+                            .when(has_icon, |this| this.ps(rems(1.5), cx))
                             .when_some(self.title.clone(), |this, title| {
                                 this.child(div().text_sm().font_semibold().child(title))
                             })
@@ -478,7 +479,7 @@ impl Render for Notification {
                 div()
                     .absolute()
                     .top_1()
-                    .right_1()
+                    .inset_e(rems(0.25), cx)
                     .invisible()
                     .group_hover("", |this| this.visible())
                     .child(
@@ -645,7 +646,10 @@ impl SystemNotificationRegistry {
             return;
         };
         entries.remove(ix);
+        #[cfg(feature = "gpui-fast")]
         cx.dismiss_system_notification(&tag);
+        #[cfg(not(feature = "gpui-fast"))]
+        cx.dismiss_system_notification(&tag).detach();
     }
 
     /// Retract all of the window's system notifications whose id matches the
@@ -677,7 +681,10 @@ impl SystemNotificationRegistry {
             }
         });
         for tag in tags {
+            #[cfg(feature = "gpui-fast")]
             cx.dismiss_system_notification(&tag);
+            #[cfg(not(feature = "gpui-fast"))]
+            cx.dismiss_system_notification(&tag).detach();
         }
     }
 
@@ -687,7 +694,10 @@ impl SystemNotificationRegistry {
         }
         // Platforms usually remove a clicked notification themselves; retract
         // explicitly for the ones that keep it in the notification center.
+        #[cfg(feature = "gpui-fast")]
         cx.dismiss_system_notification(&response.tag);
+        #[cfg(not(feature = "gpui-fast"))]
+        cx.dismiss_system_notification(&response.tag).detach();
         // The prefix already proves the notification is ours, so activate even
         // when nothing is left to dispatch to: the platform can deliver a
         // response for a notification posted before the process restarted, and
@@ -807,9 +817,13 @@ impl NotificationList {
         let settings = &cx.theme().notification;
         let (max_items, placement) = (settings.max_items, settings.placement);
 
+        let direction = gpui_base::LayoutDirection::global(cx);
+
         let mut groups: Vec<(Anchor, Vec<(NotificationId, Entity<Notification>)>)> = Vec::new();
         for (id, item, _) in self.notifications.visible(max_items) {
-            let anchor = item.read(cx).placement.unwrap_or(placement);
+            // Corners are written for LTR; `TopRight` is the top end corner.
+            let anchor =
+                gpui_base::logical_anchor(item.read(cx).placement.unwrap_or(placement), direction);
             match groups.iter_mut().find(|(a, _)| *a == anchor) {
                 Some((_, items)) => items.push((id.clone(), item.clone())),
                 None => groups.push((anchor, vec![(id.clone(), item.clone())])),
@@ -1176,7 +1190,10 @@ mod tests {
     #[test]
     fn system_tag_is_stable_and_namespaced() {
         let by_type = NotificationId::from(TypeId::of::<FooKind>());
-        assert_eq!(by_type.system_tag(), by_type.clone().system_tag());
+        assert_eq!(
+            by_type.system_tag(),
+            NotificationId::from(TypeId::of::<FooKind>()).system_tag()
+        );
         assert!(by_type.system_tag().starts_with(SYSTEM_TAG_PREFIX));
 
         let key1 = NotificationId::from((TypeId::of::<FooKind>(), ElementId::from(1usize)));

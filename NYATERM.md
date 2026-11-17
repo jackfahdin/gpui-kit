@@ -1,5 +1,32 @@
 # NyaTerm fork notes
 
+## Current upstream sync (2026-11-14)
+
+- Upstream base: `cf3e84bd367ef96678294153bece8cd7c52f0add` (`https://github.com/longbridge/gpui-kit`, `main`).
+- Previous published revision: `4add1fa8cf878583d1dee65b88cfc73e09f4190b`.
+- Preserved backup: `backup/nyaterm-20261114`; branch: `nyaterm`.
+
+Adapt the native backend to GPUI blanket IntoElement, monotone Path translation and bounds, implicit paint-layer bounds and asynchronous notification dismissal. Retain gpui-fast API guards. Move test observation outside the popup scrollbar shell and make the rounded-header regression select its edge strip after upstream quad splitting. Pin all six native Zed dependencies to 09b9329058efebd954b61a7222e87e7f4c9353e1.
+
+Windows, Rust 1.99.1: cargo test -p gpui-base -p gpui-component --lib --features gpui-component/test-support passed against local fork sources (1716 base and 818 component tests). Native consumer workspace check passed. Optional gpui-fast and macOS/Linux execution are not validated.
+
+Earlier dated sections below describe historical revisions and validation.
+
+
+## 2026-11-13 align Touch Bar KVO-safe GPUI dependency
+
+Pin all six Zed workspace dependencies to
+`fb876e285d05f9df66bd01fb60ce3d4fcdb946d4` on nyakang/zed's nyaterm branch.
+This carries the plain AccessKit adapter and attachment-lifetime guards for
+nyakang/nyaterm#1262. NyaTerm and GPUI Kit must use one GPUI revision; mixing
+this with the former a45a77c pin creates incompatible Entity and element types.
+No component behavior or public API changes. Preserve all other lock entries.
+
+Validation before publication: git diff --check passes. Consumer Windows
+compilation is run after aligning both pins. macOS execution remains unverified:
+Zed fork workflow dispatch is rejected with HTTP 422 (Actions disabled).
+
+
 ## 2026-11-07 align GPUI prepaint accessibility rollback
 
 Pin all six Zed workspace dependencies and existing lockfile sources to
@@ -638,3 +665,13 @@ Cargo commands used the consuming NyaTerm workspace's target directory.
 Native screenshot verification was unavailable because the Computer Use
 native pipe could not be connected. NyaTerm validates the published revision
 with its workspace checks.
+
+
+## Keep planar-video consumer on one GPUI revision — 2026-11-15
+
+Pin all Zed dependencies to 2302414991d9495c2b0c6a1b5534689a58da06c4,
+including the new bounded I420 video APIs. A partial consumer-only bump creates
+two incompatible GPUI type graphs; this companion pin preserves one graph.
+No component behavior changes. NyaTerm app check and 35 Android desktop tests
+passed with the equivalent local GPUI override before publishing the revision.
+The consuming workspace validates the final published dependency graph.

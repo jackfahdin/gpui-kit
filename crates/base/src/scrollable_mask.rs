@@ -1,3 +1,8 @@
+#[cfg(not(feature = "gpui-fast"))]
+use gpui::Path as PixelPath;
+#[cfg(feature = "gpui-fast")]
+type PixelPath = gpui::Path<gpui::Pixels>;
+
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
@@ -169,6 +174,8 @@ impl RoundedFrameCover {
     }
 }
 
+#[cfg(feature = "gpui-fast")]
+
 impl IntoElement for RoundedFrameCover {
     type Element = Self;
 
@@ -297,7 +304,7 @@ fn corner_notch_path(
     x_dir: f32,
     y_dir: f32,
     radius: Pixels,
-) -> Option<gpui::Path<Pixels>> {
+) -> Option<PixelPath> {
     let mut builder = gpui::PathBuilder::fill();
     builder.move_to(corner);
     builder.line_to(Point {
@@ -403,6 +410,8 @@ impl<H: ScrollbarHandle + Clone> ScrollableMask<H> {
         self
     }
 }
+
+#[cfg(feature = "gpui-fast")]
 
 impl<H: ScrollbarHandle + Clone> IntoElement for ScrollableMask<H> {
     type Element = Self;
@@ -550,6 +559,16 @@ impl<H: ScrollbarHandle + Clone> Element for ScrollableMask<H> {
                         return;
                     }
 
+                    // With nothing to scroll sideways, a swipe that moves
+                    // vertically at all belongs to the parent scroller.
+                    if is_horizontal
+                        && !delta.y.is_zero()
+                        && scroll_handle.content_size().width
+                            <= scroll_handle.viewport_bounds().size.width
+                    {
+                        return;
+                    }
+
                     // Lock the gesture to the axis it started on, so a diagonal
                     // trackpad swipe cannot flip which mask consumes it from one
                     // event to the next. Line deltas carry no touch phase.
@@ -653,7 +672,10 @@ mod tests {
         for (name, corner, x_dir, y_dir) in cases {
             let path =
                 corner_notch_path(corner, x_dir, y_dir, radius).expect("the notch tessellates");
+            #[cfg(feature = "gpui-fast")]
             let bounds = path.bounds;
+            #[cfg(not(feature = "gpui-fast"))]
+            let bounds = path.bounds();
             // Curve tessellation may inset fractionally; one pixel of slack.
             let tolerance = 1.0;
             assert!(
@@ -703,9 +725,7 @@ mod tests {
         let scroll_handle = ScrollHandle::new();
         let (_, cx) = cx.add_window_view({
             let scroll_handle = scroll_handle.clone();
-            move |_, _| HorizontalScrollAreaTest {
-                scroll_handle: scroll_handle.clone(),
-            }
+            move |_, _| HorizontalScrollAreaTest { scroll_handle }
         });
         let cx: &mut VisualTestContext = cx;
         cx.run_until_parked();
@@ -821,6 +841,53 @@ mod tests {
         assert_ne!((scroll_top.item_ix, scroll_top.offset_in_item), (0, px(0.)));
     }
 
+    /// A list whose first row is a horizontal scroll area with content that
+    /// fits, like a narrow Markdown table.
+    struct ListWithFittingAreaTest(ListState);
+
+    impl Render for ListWithFittingAreaTest {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
+            div().w(px(100.)).h(px(100.)).child(
+                list(self.0.clone(), |ix, _, _| {
+                    if ix == 0 {
+                        horizontal_scroll_area(
+                            "fitting-area",
+                            &ScrollHandle::new(),
+                            &Default::default(),
+                            div().w(px(50.)).h(px(40.)),
+                        )
+                        .into_any_element()
+                    } else {
+                        div().w(px(100.)).h(px(40.)).into_any_element()
+                    }
+                })
+                .w_full()
+                .h_full(),
+            )
+        }
+    }
+
+    #[gpui::test]
+    fn horizontal_scroll_area_that_fits_bubbles_horizontal_dominant_wheel(cx: &mut TestAppContext) {
+        let list_state = ListState::new(10, ListAlignment::Top, px(0.));
+        let (_, cx) = cx.add_window_view({
+            let list_state = list_state.clone();
+            move |_, _| ListWithFittingAreaTest(list_state)
+        });
+        cx.update(|window, cx| {
+            _ = window.draw(cx);
+        });
+
+        cx.simulate_event(ScrollEvent {
+            position: point(px(10.), px(10.)),
+            delta: ScrollDelta::Pixels(point(px(-40.), px(-10.))),
+            ..Default::default()
+        });
+        // Nothing to scroll sideways: the list takes the swipe.
+        let scroll_top = list_state.logical_scroll_top();
+        assert_ne!((scroll_top.item_ix, scroll_top.offset_in_item), (0, px(0.)));
+    }
+
     /// A `MessageScroller`-shaped nesting: a `gpui::list` with a vertical
     /// mask bound to its `ListState`, inside an ancestor vertical scroller.
     struct ListWithVerticalMaskTest {
@@ -866,7 +933,7 @@ mod tests {
             let list_state = list_state.clone();
             move |_, _| ListWithVerticalMaskTest {
                 outer_handle: outer_handle.clone(),
-                list_state: list_state.clone(),
+                list_state,
             }
         });
         cx.run_until_parked();
@@ -988,9 +1055,7 @@ mod tests {
         let scroll_handle = ScrollHandle::new();
         let (_, cx) = cx.add_window_view({
             let scroll_handle = scroll_handle.clone();
-            move |_, _| HorizontalScrollAreaTest {
-                scroll_handle: scroll_handle.clone(),
-            }
+            move |_, _| HorizontalScrollAreaTest { scroll_handle }
         });
         let cx: &mut VisualTestContext = cx;
         cx.run_until_parked();
@@ -1012,9 +1077,7 @@ mod tests {
         let scroll_handle = ScrollHandle::new();
         let (_, cx) = cx.add_window_view({
             let scroll_handle = scroll_handle.clone();
-            move |_, _| HorizontalScrollAreaTest {
-                scroll_handle: scroll_handle.clone(),
-            }
+            move |_, _| HorizontalScrollAreaTest { scroll_handle }
         });
         let cx: &mut VisualTestContext = cx;
         cx.run_until_parked();
@@ -1077,9 +1140,7 @@ mod tests {
     ) -> &'a mut VisualTestContext {
         let (_, cx) = cx.add_window_view({
             let scroll_handle = scroll_handle.clone();
-            move |_, _| HorizontalScrollAreaTest {
-                scroll_handle: scroll_handle.clone(),
-            }
+            move |_, _| HorizontalScrollAreaTest { scroll_handle }
         });
         let cx: &mut VisualTestContext = cx;
         cx.run_until_parked();
@@ -1331,7 +1392,7 @@ mod tests {
             let list_state = list_state.clone();
             move |_, _| ListWithVerticalAreaTest {
                 scroll_handle: scroll_handle.clone(),
-                list_state: list_state.clone(),
+                list_state,
             }
         });
         cx.run_until_parked();

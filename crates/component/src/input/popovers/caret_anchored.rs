@@ -5,13 +5,17 @@
 //! prepaint runs after the input's prepaint but before its paint; resolving
 //! the anchor there puts the popup at the current frame's caret instead of
 //! the previous frame's.
+#[cfg(feature = "gpui-fast")]
+use gpui::IntoElement;
 
 use gpui::{
     AnyElement, App, AvailableSpace, Bounds, Element, ElementId, GlobalElementId,
-    InspectorElementId, IntoElement, LayoutId, Pixels, Point, Size, Style, WeakEntity, Window, px,
+    InspectorElementId, LayoutId, Pixels, Point, Size, Style, WeakEntity, Window, px,
 };
 
 use crate::input::{EditorState, PrepaintCaretGeometry};
+
+const CARET_GAP: Pixels = px(4.);
 
 /// Computes the caret-anchored popup origin from fresh prepaint geometry.
 ///
@@ -20,12 +24,29 @@ use crate::input::{EditorState, PrepaintCaretGeometry};
 /// coordinates, matching where the caret itself is painted.
 pub(crate) fn caret_popup_anchor(geometry: PrepaintCaretGeometry) -> Point<Pixels> {
     Point::new(
-        geometry.cursor_bounds().origin.x - px(4.),
-        geometry.cursor_bounds().origin.y
-            + geometry.scroll_offset().y
-            + geometry.line_height()
-            + px(4.),
+        geometry.cursor_bounds().origin.x - CARET_GAP,
+        caret_top(geometry) + geometry.line_height() + CARET_GAP,
     )
+}
+
+fn caret_top(geometry: PrepaintCaretGeometry) -> Pixels {
+    geometry.cursor_bounds().origin.y + geometry.scroll_offset().y
+}
+
+/// Moves a popup that does not fit below the caret above it, when there is
+/// more room there.
+fn fit_popup_origin(
+    anchor: Point<Pixels>,
+    popup_height: Pixels,
+    geometry: PrepaintCaretGeometry,
+    viewport_height: Pixels,
+) -> Point<Pixels> {
+    let space_below = viewport_height - anchor.y;
+    let space_above = caret_top(geometry) - CARET_GAP;
+    if popup_height <= space_below || space_above <= space_below {
+        return anchor;
+    }
+    Point::new(anchor.x, (space_above - popup_height).max(px(0.)))
 }
 
 /// A popup positioned at the caret from the input's current-frame prepaint.
@@ -95,7 +116,7 @@ impl Element for CaretAnchoredPopup {
         let anchor = caret_popup_anchor(geometry);
         let mut content = (self.build)(anchor, window, cx);
         let viewport = window.viewport_size();
-        content.layout_as_root(
+        let size = content.layout_as_root(
             Size {
                 width: AvailableSpace::Definite(viewport.width),
                 height: AvailableSpace::Definite(viewport.height),
@@ -103,7 +124,8 @@ impl Element for CaretAnchoredPopup {
             window,
             cx,
         );
-        content.prepaint_at(anchor, window, cx);
+        let origin = fit_popup_origin(anchor, size.height, geometry, viewport.height);
+        content.prepaint_at(origin, window, cx);
         self.content = Some(content);
     }
 
@@ -122,6 +144,8 @@ impl Element for CaretAnchoredPopup {
         }
     }
 }
+
+#[cfg(feature = "gpui-fast")]
 
 impl IntoElement for CaretAnchoredPopup {
     type Element = Self;

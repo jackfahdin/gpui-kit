@@ -336,7 +336,7 @@ checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 
 [[package]]
 name = "app_assets"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -836,7 +836,7 @@ dependencies = [
 [[package]]
 name = "bench_metrics"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "anyhow",
  "criterion",
@@ -1512,7 +1512,7 @@ dependencies = [
 [[package]]
 name = "collections"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "gpui_util",
  "indexmap",
@@ -2422,7 +2422,7 @@ dependencies = [
 [[package]]
 name = "derive_refineable"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2437,7 +2437,7 @@ checksum = "abd57806937c9cc163efc8ea3910e00a62e2aeb0b8119f1793a978088f8f6b04"
 
 [[package]]
 name = "dialog_overlay"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -2871,7 +2871,7 @@ dependencies = [
 
 [[package]]
 name = "example-brush"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "gpui-component-story",
  "gpui-kit",
@@ -2879,7 +2879,7 @@ dependencies = [
 
 [[package]]
 name = "example-dock"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-component-story",
@@ -2891,7 +2891,7 @@ dependencies = [
 
 [[package]]
 name = "example-editor"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "autocorrect",
  "chrono",
@@ -2906,7 +2906,7 @@ dependencies = [
 
 [[package]]
 name = "example-html"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "gpui-component-story",
  "gpui-kit",
@@ -2914,15 +2914,22 @@ dependencies = [
 
 [[package]]
 name = "example-large-text"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "gpui-component-story",
  "gpui-kit",
 ]
 
 [[package]]
-name = "example-markdown"
+name = "example-link-tooltip"
 version = "0.9.0"
+dependencies = [
+ "gpui-kit",
+]
+
+[[package]]
+name = "example-markdown"
+version = "0.9.1"
 dependencies = [
  "gpui-component-story",
  "gpui-kit",
@@ -2932,7 +2939,7 @@ dependencies = [
 
 [[package]]
 name = "example-stream-markdown"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "gpui-component-story",
  "gpui-kit",
@@ -2942,14 +2949,14 @@ dependencies = [
 
 [[package]]
 name = "example-syntect"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "gpui-kit",
 ]
 
 [[package]]
 name = "example-tig"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "gpui-kit",
 ]
@@ -3157,7 +3164,7 @@ checksum = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 
 [[package]]
 name = "focus_trap"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -3254,7 +3261,7 @@ dependencies = [
 
 [[package]]
 name = "fps_monitor"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "gpui-fps",
  "gpui-kit",
@@ -3824,7 +3831,7 @@ dependencies = [
 [[package]]
 name = "gpui"
 version = "0.2.2"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "accesskit",
  "anyhow",
@@ -3854,7 +3861,7 @@ dependencies = [
  "itertools 0.14.0",
  "libc",
  "log",
- "lyon",
+ "lyon_path",
  "num_cpus",
  "objc2-core-foundation",
  "objc2-core-video",
@@ -3882,6 +3889,7 @@ dependencies = [
  "sum_tree",
  "taffy",
  "thiserror 2.0.20",
+ "tiny-skia-path",
  "ttf-parser",
  "unicode-segmentation",
  "url",
@@ -3895,7 +3903,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-base"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "aho-corasick",
  "anyhow",
@@ -3906,6 +3914,7 @@ dependencies = [
  "data-url",
  "futures",
  "gpui",
+ "gpui-base",
  "gpui-fast",
  "gpui-fast-platform",
  "gpui_macros",
@@ -3932,6 +3941,7 @@ dependencies = [
  "smallvec",
  "smol",
  "sum_tree",
+ "sys-locale",
  "tracing",
  "unicode-linebreak",
  "unicode-segmentation",
@@ -3941,7 +3951,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-base-examples"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "chrono",
  "gpui",
@@ -3955,7 +3965,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-base-examples-wasm"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "chrono",
  "console_error_panic_hook",
@@ -3974,7 +3984,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-component"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "block2 0.6.2",
@@ -4063,7 +4073,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-component-macros"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "proc-macro-crate 3.5.0",
  "proc-macro2",
@@ -4073,7 +4083,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-component-story"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -4104,7 +4114,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-component-story-web"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "console_error_panic_hook",
  "console_log",
@@ -4118,9 +4128,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-fast"
-version = "0.1.13"
+version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ee67914f779fdcfce4c7f59f6ba8fa68f680bd137648b25a801cd5d9cb1b8ab"
+checksum = "f8c3a7e25e5a4789656da980b0316857acbdb72347b5d890d7d0c549bb9fee72"
 dependencies = [
  "accesskit",
  "anyhow",
@@ -4191,9 +4201,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-fast-apple"
-version = "0.1.13"
+version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6cdf402e4a795abb27cd9545a6b519f123f4f2b8050fc7f6e7e25e376f34867d"
+checksum = "7d1934376409ef93257473cfd1cba16bbc825a3a3afc437410de73208cfd8364"
 dependencies = [
  "anyhow",
  "async-task",
@@ -4231,9 +4241,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-fast-linux"
-version = "0.1.13"
+version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "59c465cccb420a54d2abc14af42ce82ecb1ea473b531ddbd299eb4e15ae2dd83"
+checksum = "0409042721bd50ed8c538e13cb13f6d92f5adeade2e2a284a41d32c704c2eef1"
 dependencies = [
  "accesskit",
  "accesskit_unix",
@@ -4276,9 +4286,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-fast-macos"
-version = "0.1.13"
+version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d809f618f836aff7fc654c00c3f6e64d41abd83713140998dd83e8ad6906b1e9"
+checksum = "192b5731d190f840ad7868d1bb8c1c1fe70007a747cc8d2f60700699ca4318e0"
 dependencies = [
  "accesskit",
  "accesskit_macos",
@@ -4317,9 +4327,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-fast-macros"
-version = "0.1.13"
+version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "46724abd05d2c874cc31e1996bb862539c5735780dd363cb550469003a6e5140"
+checksum = "269fc24ab55f85d5fb90ce812b3e6adcf5ad0bdccc79a08aa9ddd88a3a477494"
 dependencies = [
  "heck 0.5.0",
  "proc-macro2",
@@ -4329,9 +4339,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-fast-platform"
-version = "0.1.13"
+version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eb75fcc655a819d87a75180f32528d26b869b421a53c5974046c6e2948c46ecf"
+checksum = "df86a665111fb86fe149c6d72660777d17bcf2af9133079459faf7bda0b3f756"
 dependencies = [
  "anyhow",
  "console_error_panic_hook",
@@ -4346,9 +4356,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-fast-web"
-version = "0.1.13"
+version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f5194d398f801160d6be5660055a14b175aed9b2dbca348d56065d742b11dbd9"
+checksum = "f01164798296dafad1d7608e2385f28145d36ae180cfef4d5d5ac737d323815a"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -4376,9 +4386,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-fast-wgpu"
-version = "0.1.13"
+version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a3be892e9d079745739d0e52e397fd43b61d215de4fd1477bb554a9bcf0c7e1"
+checksum = "7cfa13d90b546bec059b6e1c08969b45236d64beb89a96cc6bc54d0df19466ce"
 dependencies = [
  "anyhow",
  "bytemuck",
@@ -4404,9 +4414,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-fast-windows"
-version = "0.1.13"
+version = "0.1.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "088654835f1408e1aaa79afcc316530461a14fa1c4e543d47b1881b6ced63f19"
+checksum = "a89bfdc3a922a29f83611fc7f01642533d35260a7f86aa9befb14f2b6dcca093"
 dependencies = [
  "accesskit",
  "accesskit_windows",
@@ -4434,7 +4444,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-fps"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "core-graphics 0.24.0",
  "gpui",
@@ -4451,7 +4461,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-kit"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "chrono",
  "gpui",
@@ -4469,7 +4479,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-kit-assets"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui",
@@ -4485,16 +4495,16 @@ dependencies = [
 
 [[package]]
 name = "gpui-kit-recipes"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "gpui-kit",
 ]
 
 [[package]]
 name = "gpui-pre"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9303c771abf2acff2a96d706f69d9a82088c4770173a07cce88f0002431d887d"
+checksum = "29db89613527079737f53752eab27fb65c9a7dd94979256c65a0e590c9fd34d8"
 dependencies = [
  "accesskit",
  "anyhow",
@@ -4556,9 +4566,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-apple"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8c0bea8ffa563d3a1ada533e148bb55be7fb873c178979e889a3d1204f8e1b91"
+checksum = "a460605ec4e8cbcc9b213462a84b1d6cc3efe4ed8f0e18669659f07b2d5c6aec"
 dependencies = [
  "anyhow",
  "async-task",
@@ -4596,9 +4606,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-bench-metrics"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2380f9a4c76fbbf035fe0b83e7054216e0dbacb18e2a95bb26c27bda22376e3"
+checksum = "db6a8ff719fdc3da4f5f497b5d39c5545634424073f94943b003c818fc95e1d5"
 dependencies = [
  "anyhow",
  "criterion",
@@ -4608,9 +4618,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-collections"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "06882d54d40681ae3b145af9ef8a4021c2bf9967cc0a9fcf0cc50f003bf3cdf3"
+checksum = "cb60ece401b399fd5ec13911915b407b0c6efa1f6c9a9f66201aaac56c7ec39d"
 dependencies = [
  "gpui-pre-util",
  "indexmap",
@@ -4619,9 +4629,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-derive-refineable"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3999591b50cfd74f1734baf97fe802cce5f282d60d85b908e3393d534fbd50fb"
+checksum = "aeb2a3f5e6c9f300f432ae7989a81b262953ccfb3f9385be51cdc3303aef8858"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -4630,9 +4640,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-http-client"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a00ff0e68341f52c5903182d7e2e2d7dc247d87b0d9947ce3564e453720347a0"
+checksum = "55245de7e3b6e219596fd98bb29555d6e3fe44c055d025960affeb11b894c048"
 dependencies = [
  "anyhow",
  "bytes",
@@ -4649,9 +4659,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-ios"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "326382c3b3f004617ac0f61338594c00f053b08b7875f3486ea0f221e9b20a75"
+checksum = "10656f6db4bbedb60bd7fcbb8a70f7c7eeee45bc4582fb8933ca807d2ddf52ad"
 dependencies = [
  "anyhow",
  "block2 0.6.2",
@@ -4671,9 +4681,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-macros"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ee1c52959baa6834db3183e86affe70242ca90b4fc64ed2ae6dd689a799ce78e"
+checksum = "1c7f67904eced61ed42ae3320a9b4b388aed893f8547fffe9161ec425ad162eb"
 dependencies = [
  "heck 0.5.0",
  "proc-macro-crate 3.5.0",
@@ -4684,18 +4694,18 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-refineable"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "097375d98fecafd6e00ec13c7711709cc6d827ccad385694ce9e2c2f570c02a5"
+checksum = "4d197569e3b1fd84170f574bb866e95ecbc2625e7ae9443c877150eaf7d53374"
 dependencies = [
  "gpui-pre-derive-refineable",
 ]
 
 [[package]]
 name = "gpui-pre-scheduler"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "93c3c9f76341cdf03801699d68876915b42d5858e80c52a141ebfc350358147b"
+checksum = "b1d3fa97eeb4ea233635b756684affe96db9e29fc2af8cdc269268bd7ff649fc"
 dependencies = [
  "async-task",
  "backtrace",
@@ -4710,9 +4720,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-shared-string"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "781aaf9a9c19e3367b94100c7b1a17283721766bc890909ce8aa34e8c5b1a99a"
+checksum = "63c2ed1e44195079d4461b83a99845aa9a52ce8fcf1516410816670a03d32d94"
 dependencies = [
  "schemars",
  "serde",
@@ -4721,9 +4731,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-sum-tree"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0cb18765472fb2c64b7e6374f9a36f512ce25b1ccb3662fff51788564107eb3"
+checksum = "6085e61458366decd21491396b0b90b3adf928f2ec27e170c4d3c9fba455d536"
 dependencies = [
  "gpui-pre-ztracing",
  "heapless",
@@ -4733,9 +4743,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-util"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "49036ad9887034f8d6652b65761ee1c1fdbd7d66be33a6088245fae54dc643e3"
+checksum = "52ead57ff96b5a34e71d64758080347066d667e0c4bd4ff71e85f3a50643fa3e"
 dependencies = [
  "anyhow",
  "log",
@@ -4744,9 +4754,9 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-ztracing"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ac9274f4fb36ce6bf128f9b48032196a3120cb858503af33ced6c21366cf2f7"
+checksum = "1043bbe8d711baf03e774b03bae6521155f017450b866dcaa987a07d978d660a"
 dependencies = [
  "gpui-pre-ztracing-macro",
  "tracing",
@@ -4754,13 +4764,13 @@ dependencies = [
 
 [[package]]
 name = "gpui-pre-ztracing-macro"
-version = "0.3.11"
+version = "0.3.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99b18b06f5026b3d312488eacfdddbe78f82b4bf32bb2d2bc3186e31e552b797"
+checksum = "85701631a9bbecf47e6d19f145e85e57767e7c50f7192d5b1bf65b5ef43cb373"
 
 [[package]]
 name = "gpui-shell"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -4802,9 +4812,10 @@ dependencies = [
 
 [[package]]
 name = "gpui-webview"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
+ "gdkx11",
  "gpui-kit",
  "gtk",
  "lb-wry",
@@ -4812,12 +4823,13 @@ dependencies = [
  "objc2 0.6.4",
  "objc2-app-kit 0.3.2",
  "objc2-foundation 0.3.2",
+ "x11",
 ]
 
 [[package]]
 name = "gpui_apple"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "anyhow",
  "async-task",
@@ -4856,7 +4868,7 @@ dependencies = [
 [[package]]
 name = "gpui_ios"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "anyhow",
  "block2 0.6.2",
@@ -4877,7 +4889,7 @@ dependencies = [
 [[package]]
 name = "gpui_linux"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "accesskit",
  "accesskit_unix",
@@ -4921,7 +4933,285 @@ dependencies = [
 [[package]]
 name = "gpui_macos"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
+dependencies = [
+ "accesskit",
+ "accesskit_macos",
+ "anyhow",
+ "block2 0.6.2",
+ "collections",
+ "core-foundation 0.10.1",
+ "core-foundation-sys 0.8.7",
+ "core-graphics 0.24.0",
+ "ctor",
+ "dispatch2",
+ "foreign-types",
+ "futures",
+ "gpui",
+ "gpui_apple",
+ "gpui_util",
+ "image",
+ "itertools 0.14.0",
+ "log",
+ "objc2 0.6.4",
+ "objc2-app-kit 0.3.2",
+ "objc2-core-graphics",
+ "objc2-core-video",
+ "objc2-foundation 0.3.2",
+ "objc2-quartz-core 0.3.2",
+ "objc2-uniform-type-identifiers",
+ "objc2-user-notifications",
+ "parking_lot",
+ "raw-window-handle",
+ "scheduler",
+ "semver",
+ "serde_json",
+ "smallvec",
+ "strum",
+ "uuid",
+]
+
+[[package]]
+name = "gpui_macros"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
+dependencies = [
+ "heck 0.5.0",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.119",
+]
+
+[[package]]
+name = "gpui_platform"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
+dependencies = [
+ "anyhow",
+ "console_error_panic_hook",
+ "gpui",
+ "gpui_ios",
+ "gpui_linux",
+ "gpui_macos",
+ "gpui_web",
+ "gpui_wgpu",
+ "gpui_windows",
+]
+
+[[package]]
+name = "gpui_shared_string"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
+dependencies = [
+ "schemars",
+ "serde",
+ "smol_str",
+]
+
+[[package]]
+name = "gpui_util"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
+dependencies = [
+ "anyhow",
+ "log",
+ "which",
+]
+
+[[package]]
+name = "gpui_web"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
+dependencies = [
+ "anyhow",
+ "async-channel",
+ "console_error_panic_hook",
+ "futures",
+ "gpui",
+ "gpui_wgpu",
+ "http_client",
+ "js-sys",
+ "log",
+ "parking_lot",
+ "raw-window-handle",
+ "scheduler",
+ "smallvec",
+ "unicode-properties",
+ "unicode-script",
+ "unicode-segmentation",
+ "uuid",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "wasm_thread 0.3.3 (git+https://github.com/zed-industries/wasm_thread?rev=0cf96c7708dfb97ccf3da50347e25edcf75d6937)",
+ "web-sys",
+ "web-time",
+]
+
+[[package]]
+name = "gpui_wgpu"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
+dependencies = [
+ "anyhow",
+ "bytemuck",
+ "collections",
+ "cosmic-text",
+ "etagere",
+ "gpui",
+ "gpui_util",
+ "image",
+ "itertools 0.14.0",
+ "js-sys",
+ "log",
+ "parking_lot",
+ "profiling",
+ "raw-window-handle",
+ "smallvec",
+ "swash",
+ "unicode-bidi",
+ "unicode-segmentation",
+ "web-sys",
+ "wgpu 30.0.0",
+ "zed-font-kit 0.14.1-zed (git+https://github.com/zed-industries/font-kit?rev=94b0f28166665e8fd2f53ff6d268a14955c82269)",
+]
+
+[[package]]
+name = "gpui_windows"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
+dependencies = [
+ "accesskit",
+ "accesskit_windows",
+ "anyhow",
+ "collections",
+ "dunce",
+ "etagere",
+ "futures",
+ "gpui",
+ "gpui_util",
+ "image",
+ "itertools 0.14.0",
+ "log",
+ "parking_lot",
+ "rand 0.9.5",
+ "raw-window-handle",
+ "scheduler",
+ "smallvec",
+ "uuid",
+ "windows 0.62.2",
+ "windows-core 0.62.2",
+ "windows-numerics 0.3.1",
+ "windows-registry 0.6.1",
+]
+
+[[package]]
+name = "gpui_apple"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+dependencies = [
+ "anyhow",
+ "async-task",
+ "block2 0.6.2",
+ "cbindgen",
+ "collections",
+ "core-foundation 0.10.1",
+ "core-foundation-sys 0.8.7",
+ "core-graphics 0.24.0",
+ "core-text",
+ "dispatch2",
+ "etagere",
+ "futures",
+ "gpui",
+ "gpui_util",
+ "image",
+ "libc",
+ "log",
+ "mach2 0.6.0",
+ "objc2 0.6.4",
+ "objc2-core-foundation",
+ "objc2-core-graphics",
+ "objc2-core-text",
+ "objc2-core-video",
+ "objc2-foundation 0.3.2",
+ "objc2-metal 0.3.2",
+ "objc2-quartz-core 0.3.2",
+ "objc2-security",
+ "parking_lot",
+ "pathfinder_geometry",
+ "smallvec",
+ "thiserror 2.0.20",
+ "zed-font-kit 0.14.1-zed (git+https://github.com/zed-industries/font-kit?rev=94b0f28166665e8fd2f53ff6d268a14955c82269)",
+]
+
+[[package]]
+name = "gpui_ios"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+dependencies = [
+ "anyhow",
+ "block2 0.6.2",
+ "futures",
+ "gpui",
+ "gpui_apple",
+ "log",
+ "objc2 0.6.4",
+ "objc2-core-foundation",
+ "objc2-foundation 0.3.2",
+ "objc2-quartz-core 0.3.2",
+ "objc2-ui-kit",
+ "parking_lot",
+ "raw-window-handle",
+ "uuid",
+]
+
+[[package]]
+name = "gpui_linux"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+dependencies = [
+ "accesskit",
+ "accesskit_unix",
+ "anyhow",
+ "as-raw-xcb-connection",
+ "ashpd",
+ "bytemuck",
+ "calloop",
+ "calloop-wayland-source",
+ "collections",
+ "filedescriptor",
+ "futures",
+ "gpui",
+ "gpui_util",
+ "gpui_wgpu",
+ "http_client",
+ "libc",
+ "log",
+ "notify-rust",
+ "oo7 0.6.0 (git+https://github.com/zed-industries/oo7?rev=731c1215edb6905876c6137ab300428c7b8d7c13)",
+ "open",
+ "parking_lot",
+ "raw-window-handle",
+ "smallvec",
+ "smol",
+ "strum",
+ "url",
+ "uuid",
+ "wayland-backend",
+ "wayland-client",
+ "wayland-cursor",
+ "wayland-protocols",
+ "wayland-protocols-plasma",
+ "wayland-protocols-wlr",
+ "x11rb",
+ "xkbcommon",
+ "zed-scap 0.0.8-zed (git+https://github.com/zed-industries/scap?rev=b5c86ec58dd4b6b7732bf6ac8be03d6b1f190a82)",
+ "zed-xim 0.4.0-zed (git+https://github.com/zed-industries/xim-rs.git?rev=16f35a2c881b815a2b6cdfd6687988e84f8447d8)",
+]
+
+[[package]]
+name = "gpui_macos"
+version = "0.1.0"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
 dependencies = [
  "accesskit",
  "accesskit_macos",
@@ -4961,7 +5251,7 @@ dependencies = [
 [[package]]
 name = "gpui_macros"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
 dependencies = [
  "heck 0.5.0",
  "proc-macro2",
@@ -4972,7 +5262,7 @@ dependencies = [
 [[package]]
 name = "gpui_platform"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
 dependencies = [
  "anyhow",
  "console_error_panic_hook",
@@ -4988,7 +5278,7 @@ dependencies = [
 [[package]]
 name = "gpui_shared_string"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
 dependencies = [
  "schemars",
  "serde",
@@ -4998,7 +5288,7 @@ dependencies = [
 [[package]]
 name = "gpui_util"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
 dependencies = [
  "anyhow",
  "log",
@@ -5008,7 +5298,7 @@ dependencies = [
 [[package]]
 name = "gpui_web"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
 dependencies = [
  "anyhow",
  "async-channel",
@@ -5037,7 +5327,7 @@ dependencies = [
 [[package]]
 name = "gpui_wgpu"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
 dependencies = [
  "anyhow",
  "bytemuck",
@@ -5064,7 +5354,7 @@ dependencies = [
 [[package]]
 name = "gpui_windows"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
 dependencies = [
  "accesskit",
  "accesskit_windows",
@@ -5296,7 +5586,7 @@ checksum = "2304e00983f87ffb38b55b444b5e3b60a884b5d30c0fca7d82fe33449bbe55ea"
 
 [[package]]
 name = "hello_world"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -5422,7 +5712,7 @@ dependencies = [
 [[package]]
 name = "http_client"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "anyhow",
  "bytes",
@@ -5440,7 +5730,7 @@ dependencies = [
 [[package]]
 name = "http_client_tls"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "log",
  "rustls",
@@ -5832,7 +6122,7 @@ dependencies = [
 
 [[package]]
 name = "input"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -6489,7 +6779,7 @@ dependencies = [
 
 [[package]]
 name = "markdown_table"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "gpui-kit",
 ]
@@ -9187,7 +9477,7 @@ dependencies = [
 [[package]]
 name = "refineable"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "derive_refineable",
 ]
@@ -9254,7 +9544,7 @@ checksum = "19b30a45b0cd0bcca8037f3d0dc3421eaf95327a17cad11964fb8179b4fc4832"
 [[package]]
 name = "reqwest_client"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "anyhow",
  "bytes",
@@ -9531,9 +9821,9 @@ dependencies = [
 
 [[package]]
 name = "rustls"
-version = "0.23.43"
+version = "0.23.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0283386ce02abc0151e1761d08802dfe86c173b0b494af5cbc086574e453da06"
+checksum = "48e13bd8c0e9365c43cfa5c9e8f9ad49d3c8444926c9aac819e0e4dc503c8fdf"
 dependencies = [
  "aws-lc-rs",
  "log",
@@ -9605,9 +9895,9 @@ checksum = "f87165f0995f63a9fbeea62b64d10b4d9d8e78ec6d7d51fb2125fda7bb36788f"
 
 [[package]]
 name = "rustls-webpki"
-version = "0.103.15"
+version = "0.103.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f3c3cf1d8b1e7d4927e2d154c3fcb02979afb9939629c62cd9048d4f07b60ac2"
+checksum = "4443b1b6d39d7c663139942cc4558262562d2c84123bb6282ef177009ca8b281"
 dependencies = [
  "aws-lc-rs",
  "ring",
@@ -9678,7 +9968,7 @@ dependencies = [
 [[package]]
 name = "scheduler"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "async-task",
  "backtrace",
@@ -10091,7 +10381,7 @@ checksum = "f8fadd59c855ef2080decdef8ff161eb6661b86933c9d82e5ba29dc602a55aba"
 
 [[package]]
 name = "sidebar"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -10299,7 +10589,7 @@ dependencies = [
 
 [[package]]
 name = "speech"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "cpal",
@@ -10444,7 +10734,7 @@ checksum = "13c2bddecc57b384dee18652358fb23172facb8a2c51ccc10d74c157bdea3292"
 [[package]]
 name = "sum_tree"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "heapless",
  "rayon",
@@ -10644,7 +10934,7 @@ dependencies = [
 
 [[package]]
 name = "system_monitor"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "battery",
@@ -10658,7 +10948,7 @@ dependencies = [
 
 [[package]]
 name = "table_in_scrollable"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "gpui-kit",
 ]
@@ -10765,7 +11055,7 @@ dependencies = [
 
 [[package]]
 name = "text_max_lines"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -10774,7 +11064,7 @@ dependencies = [
 
 [[package]]
 name = "text_selection"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -11122,7 +11412,7 @@ checksum = "7d56353a2a665ad0f41a421187180aab746c8c325620617ad883a99a1cbe66d2"
 
 [[package]]
 name = "tooltip_top_edge"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -11130,7 +11420,7 @@ dependencies = [
 
 [[package]]
 name = "touch_selection"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -12307,9 +12597,9 @@ dependencies = [
 
 [[package]]
 name = "webpki-root-certs"
-version = "1.0.9"
+version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b96554aa2acc8ccdb7e1c9a58a7a68dd5d13bccc69cd124cb09406db612a1c9b"
+checksum = "e49d0e65abc00c142e8f9428da991da9f1a250c39be97459901eb12b9b49f62a"
 dependencies = [
  "rustls-pki-types",
 ]
@@ -12334,7 +12624,7 @@ dependencies = [
 
 [[package]]
 name = "webview"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -12802,7 +13092,7 @@ checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
 
 [[package]]
 name = "window_title"
-version = "0.9.0"
+version = "0.9.1"
 dependencies = [
  "anyhow",
  "gpui-kit",
@@ -14107,7 +14397,7 @@ checksum = "29666d0abbfad1e3dc4dcf6144730dd3a3ab225bbbdac83319345b1b44ccfc1b"
 [[package]]
 name = "ztracing"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 dependencies = [
  "tracing",
  "ztracing_macro",
@@ -14116,7 +14406,7 @@ dependencies = [
 [[package]]
 name = "ztracing_macro"
 version = "0.1.0"
-source = "git+https://github.com/nyakang/zed?rev=a45a77c08a7cd5ed364778eb84961e1bde650b73#a45a77c08a7cd5ed364778eb84961e1bde650b73"
+source = "git+https://github.com/jackfahdin/zed?rev=09b9329058efebd954b61a7222e87e7f4c9353e1#09b9329058efebd954b61a7222e87e7f4c9353e1"
 
 [[package]]
 name = "zune-core"
