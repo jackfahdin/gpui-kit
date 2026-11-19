@@ -1,5 +1,34 @@
 # NyaTerm fork notes
 
+## 2026-11-19 size scrollable popup menus from the current window
+
+Use `Window::bounds()` for the default popup height limit. On Windows,
+`window_bounds()` deliberately retains `rcNormalPosition` while maximized,
+so a menu opened after maximizing a small window was still capped at half
+the restore height. Keep explicit `max_h` overrides and the existing
+half-window / 28.125rem default limits unchanged. No public API or persisted
+format changes.
+
+Add the opt-in Windows native `native_popup_menu` regression in Kit. The
+ordinary GPUI TestWindow cannot represent separate current and restore
+bounds. The bounded child process exercises a small window, maximize and
+restore, reopening a 40-item scrollable menu at 12px, 16px and 24px rem sizes
+and checking explicit height overrides in every state. It uses Win32 only
+to restore the test window because this GPUI revision's zoom API maximizes.
+Refresh the fork lockfile to the already configured Zed revision and add
+only the native test dependencies, preserving other locked package versions.
+
+Windows, Rust 1.99.1: the native test failed before the fix with current
+height 1009px, restore height 320px and menu height 160px instead of 337.5px.
+After the fix all nine state/zoom combinations and explicit overrides pass,
+and the application exits normally. All 818 Component library tests pass
+with `test-support` and serialized execution. Touched-file rustfmt and
+`git diff --check` pass; Clippy passes for the Component/Kit libraries and
+native regression. Run the native regression explicitly with
+`cargo test -p gpui-kit --features test-support --test native_popup_menu`.
+Validation from the NyaTerm consumer uses its registry `zed-reqwest` adapter.
+macOS/Linux and optional GPUI Fast execution remain unverified.
+
 ## Current upstream sync (2026-11-14)
 
 - Upstream base: `cf3e84bd367ef96678294153bece8cd7c52f0add` (`https://github.com/longbridge/gpui-kit`, `main`).
