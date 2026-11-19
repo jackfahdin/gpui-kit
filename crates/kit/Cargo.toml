@@ -98,6 +98,10 @@ gpui = { workspace = true, features = ["test-support"] }
 gpui-fast = { workspace = true, features = ["test-support"] }
 jiff = "1.0"
 lsp-types.workspace = true
+raw-window-handle.workspace = true
+
+[target.'cfg(target_os = "windows")'.dev-dependencies]
+windows = { workspace = true, features = ["Win32_UI_WindowsAndMessaging"] }
 
 [[test]]
 name = "ui"
@@ -116,3 +120,10 @@ name = "native_shutdown"
 # Run explicitly with `cargo test -p gpui-kit --test native_shutdown`.
 test = false
 harness = false
+
+[[test]]
+name = "native_popup_menu"
+# Exercises Windows maximize/restore bounds; requires a desktop session.
+test = false
+harness = false
+required-features = ["test-support", "component"]

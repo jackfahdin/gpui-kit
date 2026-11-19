@@ -1795,7 +1795,8 @@ impl Render for PopupMenu {
         let items_count = self.menu_items.len();
 
         let max_height = self.max_height.unwrap_or_else(|| {
-            let window_half_height = window.window_bounds().get_bounds().size.height * 0.5;
+            // Restorable window bounds retain the unmaximized size on Windows.
+            let window_half_height = window.bounds().size.height * 0.5;
             window_half_height.min(rems(28.125).to_pixels(window.rem_size()))
         });
 
