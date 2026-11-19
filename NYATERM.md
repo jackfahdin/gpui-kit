@@ -713,3 +713,18 @@ share one GPUI type graph with deferred Windows file clipboard support.
 No component behavior changes. Validation: the equivalent consuming-workspace
 local override compiled the desktop and passed 16 Windows native drag/clipboard
 tests; final published dependency graph is checked by the consuming workspace.
+
+## 2026-11-19 align owned-upload GPUI revision
+
+Move the six Zed workspace dependencies together from
+`df44bb4fa7f95e9159a9558a4835f918a02e043e` to
+`468bc1eb8e31d8f802af766a4d2d74d2d08ea46a` on nyakang/zed's `nyaterm`
+branch. NyaTerm's owned VNC texture uploads require this additive GPUI API;
+keeping the component fork pinned to the same revision avoids incompatible
+GPUI identities. No component source/API or serialized data changes.
+
+Validation: all six pins updated consistently; git diff --check passed.
+NyaTerm Linux desktop and native probe integration passed using these GPUI
+sources and unchanged component sources before this pin update. The consuming
+NyaTerm workspace will check the published pins and lock together; standalone
+component and Windows/macOS acceptance are not claimed here.
