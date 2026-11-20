@@ -19,18 +19,24 @@ This branch carries ZzClawTerm's local changes to `gpui-kit` on the `nyaterm` br
   `exports::` so the workflow is valid YAML and can start on GitHub Actions.
 - `script/check-gpui-pin.ts` requires the coherent Zed dependencies to use
   `jackfahdin/zed`, matching the fork's source-of-truth policy.
+- `crates/base/tests/block_surface.rs` coalesces the interior and four edge
+  strips of a rounded quad by their shared bounds. Current GPUI gives those
+  fragments different content masks, so counting them separately incorrectly
+  reports five surfaces. Runtime rendering is unchanged.
 - `NYATERM.md` remains as the historical patch record from the original fork.
 
 ## Validation on Windows
 
 ```sh
+cargo test -p gpui-base --features test-support -- --test-threads=4
 cargo check -p gpui-kit -p gpui-component
 cargo test -p gpui-component menu::popup_menu --lib
 ```
 
-The component checks passed and all six selected popup-menu tests passed.
-`Cargo.lock` contains exactly one `gpui`, `gpui_platform` and `collections`
-package, all sourced from the same `jackfahdin/zed` revision.
+The full Base suite passed, including 1,716 unit tests and all ten block-surface
+integration tests. The component checks passed and all six selected popup-menu
+tests passed. `Cargo.lock` contains exactly one `gpui`, `gpui_platform` and
+`collections` package, all sourced from the same `jackfahdin/zed` revision.
 
 `cargo fmt --all -- --check` reports the existing upstream formatting difference
 in `crates/base/examples/showcase/components/text_view.rs`; this merge does not

@@ -175,7 +175,10 @@ impl Doc<'_> {
                     )
                 })
                 .collect();
-            quads.sort_by_key(|quad| quad.top());
+            // A rounded quad is split into an interior and four edge strips
+            // with the same bounds but different content masks.
+            quads.sort_by_key(|quad| (quad.top(), quad.left(), quad.bottom(), quad.right()));
+            quads.dedup();
             quads
         })
     }
