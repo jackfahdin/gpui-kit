@@ -17,6 +17,8 @@ This branch carries ZzClawTerm's local changes to `gpui-kit` on the `nyaterm` br
   are retained. Upstream menu behavior and tests are otherwise preserved.
 - The native facade test command in `.github/workflows/nyaterm.yml` quotes
   `exports::` so the workflow is valid YAML and can start on GitHub Actions.
+- `script/check-gpui-pin.ts` requires the coherent Zed dependencies to use
+  `jackfahdin/zed`, matching the fork's source-of-truth policy.
 - `NYATERM.md` remains as the historical patch record from the original fork.
 
 ## Validation on Windows
