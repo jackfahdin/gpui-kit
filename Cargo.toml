@@ -59,14 +59,14 @@ gpui-shell = { path = "crates/shell", version = "0.9.1" }
 gpui-webview = { path = "crates/webview", version = "0.9.1" }
 story = { path = "crates/story" }
 
-# NyaTerm consumes one coherent Zed fork revision so its dynamic-texture and
+# ZzClawTerm consumes one coherent Zed fork revision so its dynamic-texture and
 # hidden-cursor APIs cannot be mixed with a published gpui-pre snapshot.
-gpui = { version = "=0.2.2", git = "https://github.com/jackfahdin/zed", rev = "82ba81f68faec0604efcb4353c5f189b4487b2d4" }
-gpui_platform = { git = "https://github.com/jackfahdin/zed", rev = "82ba81f68faec0604efcb4353c5f189b4487b2d4", features = ["font-kit", "x11", "wayland", "runtime_shaders"] }
-gpui_web = { git = "https://github.com/jackfahdin/zed", rev = "82ba81f68faec0604efcb4353c5f189b4487b2d4" }
-gpui_macros = { version = "0.1.0", git = "https://github.com/jackfahdin/zed", rev = "82ba81f68faec0604efcb4353c5f189b4487b2d4" }
-reqwest_client = { git = "https://github.com/jackfahdin/zed", rev = "82ba81f68faec0604efcb4353c5f189b4487b2d4" }
-sum-tree = { package = "sum_tree", git = "https://github.com/jackfahdin/zed", rev = "82ba81f68faec0604efcb4353c5f189b4487b2d4" }
+gpui = { version = "=0.2.2", git = "https://github.com/jackfahdin/zed", rev = "468bc1eb8e31d8f802af766a4d2d74d2d08ea46a" }
+gpui_platform = { git = "https://github.com/jackfahdin/zed", rev = "468bc1eb8e31d8f802af766a4d2d74d2d08ea46a", features = ["font-kit", "x11", "wayland", "runtime_shaders"] }
+gpui_web = { git = "https://github.com/jackfahdin/zed", rev = "468bc1eb8e31d8f802af766a4d2d74d2d08ea46a" }
+gpui_macros = { version = "0.1.0", git = "https://github.com/jackfahdin/zed", rev = "468bc1eb8e31d8f802af766a4d2d74d2d08ea46a" }
+reqwest_client = { git = "https://github.com/jackfahdin/zed", rev = "468bc1eb8e31d8f802af766a4d2d74d2d08ea46a" }
+sum-tree = { package = "sum_tree", git = "https://github.com/jackfahdin/zed", rev = "468bc1eb8e31d8f802af766a4d2d74d2d08ea46a" }
 gpui-fast = { package = "gpui-fast", version = "0.1.14", features = ["windows-manifest-provided-by-host"] }
 gpui-fast-platform = { package = "gpui-fast-platform", version = "0.1.14", features = ["font-kit", "x11", "wayland", "runtime_shaders"] }
 gpui-fast-web = { package = "gpui-fast-web", version = "0.1.14" }
