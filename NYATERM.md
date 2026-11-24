@@ -1,5 +1,29 @@
 # NyaTerm fork notes
 
+## Upstream sync — 2026-11-25
+
+Rebase the concern-separated NyaTerm series onto longbridge/gpui-kit main
+`c9174d9d8c98642c6d19025f60d29552d859aa28` (87 new upstream commits).
+The previous published head `c3e573ae50640dffff9f9778efa1f0829e814f94`
+is preserved remotely as `backup/nyaterm-20261125-c3e573ae`.
+
+Upstream now supplies the native IntoElement, Path, paint-layer and async
+notification adaptations formerly carried by patch b5aa3382; omit that
+superseded patch. Preserve NyaTerm popup notification priority together with
+upstream dialog priority. Keep native overlays, input, menu and scrollbar
+patches. All six native Zed dependencies now pin
+`2bec6484a0f9ebe9cd49609fbb68a916f722362f`; refresh Cargo.lock to match.
+Initialize the added native-overlay hitbox field in the text-selection fixture.
+No persistent data formats change.
+
+Validation on Linux: gpui-base (1,813) and gpui-component (857) library tests
+passed with gpui-component/test-support and serialized execution. Library Clippy
+passed (one existing unused-constant warning); rustfmt corrected two layout-only
+differences after the rebase. Windows and
+macOS native acceptance were not available on this host. The consuming NyaTerm
+workspace validates the shared dependency graph before publishing nyaterm.
+
+
 ## 2026-11-19 size scrollable popup menus from the current window
 
 Use `Window::bounds()` for the default popup height limit. On Windows,

@@ -4945,6 +4945,7 @@ mod tests {
         let registration = |bounds: Bounds<Pixels>, mask: Bounds<Pixels>| {
             TextSelectionRegistration::new(
                 Hitbox {
+                    native_overlay_input: None,
                     id: HitboxId::placeholder(),
                     bounds,
                     content_mask: ContentMask { bounds: mask },

@@ -1667,7 +1667,13 @@ impl PopupMenu {
                                 .child(
                                     options
                                         .layout
-                                        .size_icon(Icon::new(if LayoutDirection::global(cx).is_rtl() { IconName::ChevronLeft } else { IconName::ChevronRight }))
+                                        .size_icon(Icon::new(
+                                            if LayoutDirection::global(cx).is_rtl() {
+                                                IconName::ChevronLeft
+                                            } else {
+                                                IconName::ChevronRight
+                                            },
+                                        ))
                                         .text_color(cx.theme().muted_foreground),
                                 ),
                         ),
