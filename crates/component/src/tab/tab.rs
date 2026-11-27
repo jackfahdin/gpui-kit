@@ -1,5 +1,3 @@
-#[cfg(feature = "gpui-fast")]
-use gpui::{FillOptions, PathStyle};
 use std::{rc::Rc, time::Duration};
 
 use crate::animation::{Lerp, ease_in_out_cubic};
@@ -455,10 +453,6 @@ fn folder_tab_shape(metrics: FolderTabMetrics, bg: Background) -> impl IntoEleme
             // Like Chrome, keep at least a third of the top flat on narrow tabs.
             let radius = ((bounds.size.width - curve * 2.) / 3.).clamp(px(0.), curve);
 
-            #[cfg(feature = "gpui-fast")]
-            let mut path =
-                PathBuilder::fill().with_style(PathStyle::Fill(FillOptions::tolerance(0.02)));
-            #[cfg(not(feature = "gpui-fast"))]
             let mut path = PathBuilder::fill();
             path.move_to(point(left, bottom));
             quarter_circle_to(

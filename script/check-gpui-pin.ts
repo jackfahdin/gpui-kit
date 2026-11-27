@@ -35,7 +35,7 @@ interface GitDependency {
   rev: string | undefined;
 }
 
-const ZZCLAWTERM_ZED = "https://github.com/jackfahdin/zed";
+const NYATERM_ZED = "https://github.com/jackfahdin/zed";
 const ZED_ALIASES = ["gpui", "gpui_platform", "gpui_web", "gpui_macros", "reqwest_client", "sum-tree"];
 
 function snapshotDependencies(manifestPath: string): Dependency[] {
@@ -93,8 +93,8 @@ function forkProblems(manifestPath: string): string[] {
   });
   const found: string[] = [];
   for (const dependency of dependencies) {
-    if (dependency.git !== ZZCLAWTERM_ZED) {
-      found.push(`${dependency.alias} is not pinned to ${ZZCLAWTERM_ZED}`);
+    if (dependency.git !== NYATERM_ZED) {
+      found.push(`${dependency.alias} is not pinned to ${NYATERM_ZED}`);
     }
     if (!dependency.rev?.match(/^[0-9a-f]{40}$/)) {
       found.push(`${dependency.alias} does not use a full 40-character revision`);
@@ -102,7 +102,7 @@ function forkProblems(manifestPath: string): string[] {
   }
   const revisions = new Set(dependencies.map((dependency) => dependency.rev).filter(Boolean));
   if (revisions.size > 1) {
-    found.push(`the ZzClawTerm Zed dependencies use more than one revision: ${[...revisions].join(", ")}`);
+    found.push(`the NyaTerm Zed dependencies use more than one revision: ${[...revisions].join(", ")}`);
   }
   return found;
 }
@@ -118,5 +118,5 @@ if (found.length > 0) {
 console.log(
   snapshot.length > 0
     ? `${MANIFEST} pins the ${SNAPSHOT_PREFIX}-* crates exactly`
-    : `${MANIFEST} pins every ZzClawTerm Zed dependency to one revision`,
+    : `${MANIFEST} pins every NyaTerm Zed dependency to one revision`,
 );

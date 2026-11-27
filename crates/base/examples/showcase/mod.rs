@@ -214,11 +214,7 @@ impl BaseShowcase {
         let otp = cx.new(|cx| OtpState::new(6, window, cx).default_value("12"));
         let time_field = cx.new(|cx| {
             let mut state = TimeFieldState::new(window, cx).precision(TimePrecision::Second);
-            state.set_time(
-                chrono::NaiveTime::from_hms_opt(9, 30, 0).unwrap_or_default(),
-                window,
-                cx,
-            );
+            state.set_time(jiff::civil::time(9, 30, 0, 0), window, cx);
             state
         });
         cx.observe(&time_field, |_, _, cx| cx.notify()).detach();
@@ -739,7 +735,7 @@ pub fn run(app: Application, component: impl Into<String>) {
             .expect("failed to load gpui-base example font");
         let options = WindowOptions {
             #[cfg(not(target_family = "wasm"))]
-            window_bounds: Some(WindowBounds::centered(size(px(840.), px(640.)), cx)),
+            window_bounds: Some(WindowBounds::centered(None, size(px(840.), px(640.)), cx)),
             ..WindowOptions::default()
         };
         cx.open_window(options, move |window, cx| {

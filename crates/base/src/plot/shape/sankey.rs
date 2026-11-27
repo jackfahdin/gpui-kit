@@ -1,11 +1,6 @@
-#[cfg(not(feature = "gpui-fast"))]
-use gpui::Path as PixelPath;
-#[cfg(feature = "gpui-fast")]
-type PixelPath = gpui::Path<gpui::Pixels>;
-
 // @reference: https://github.com/d3/d3-sankey
 
-use gpui::{PathBuilder, Pixels, Point, px};
+use gpui::{Path, PathBuilder, Pixels, Point, px};
 
 use crate::plot::origin_point;
 
@@ -913,7 +908,7 @@ pub fn sankey_link_path(
     link: &SankeyLinkLayout,
     min_width: f32,
     origin: Point<Pixels>,
-) -> Option<PixelPath> {
+) -> Option<Path> {
     let source_half = link.source_width.max(min_width) / 2.;
     let target_half = link.target_width.max(min_width) / 2.;
     let sx = source.x1;

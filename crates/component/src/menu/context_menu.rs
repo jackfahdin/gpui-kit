@@ -119,16 +119,6 @@ impl<E: ParentElement + Styled> Styled for ContextMenu<E> {
     }
 }
 
-#[cfg(feature = "gpui-fast")]
-
-impl<E: ParentElement + Styled + IntoElement + 'static> IntoElement for ContextMenu<E> {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
-    }
-}
-
 struct ContextMenuSharedState {
     menu_view: Option<Entity<PopupMenu>>,
     /// Kept while open so replacing the menu preserves its input's selection
@@ -208,16 +198,6 @@ impl DeferredMenu {
         )
         .with_priority(gpui_base::POPUP_PRIORITY)
         .into_any()
-    }
-}
-
-#[cfg(feature = "gpui-fast")]
-
-impl IntoElement for DeferredMenu {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
     }
 }
 
@@ -498,6 +478,12 @@ fn open_menu(
                 };
                 build(menu, window, cx)
             });
+            // An empty menu is never drawn, so nothing would dismiss it and
+            // hand focus back: leave focus where it is and the menu closed.
+            if menu.read(cx).is_empty() {
+                shared_state.borrow_mut().open = false;
+                return;
+            }
             let trigger_focus_handle = shared_state.borrow().trigger_focus_handle.clone();
             menu.update(cx, |menu, cx| {
                 menu.set_trigger_focus(trigger_focus_handle, cx);
@@ -868,6 +854,53 @@ mod tests {
         cx.update(|window, cx| {
             let focused = window.focused(cx);
             assert!(focused.is_some() && focused.as_ref() != Some(&content_focus));
+        });
+    }
+
+    /// Focus in the content, beside a trigger whose builder has nothing to
+    /// offer.
+    struct EmptyMenuRoot {
+        content_focus: FocusHandle,
+    }
+
+    impl Render for EmptyMenuRoot {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
+            div()
+                .size_full()
+                .child(
+                    div()
+                        .id("content")
+                        .h(px(40.))
+                        .track_focus(&self.content_focus),
+                )
+                .child(div().id("tab").h(px(60.)).context_menu(|menu, _, _| menu))
+        }
+    }
+
+    /// A builder may have nothing to offer where the press landed. The empty
+    /// menu is never drawn, so nothing would dismiss it and hand focus back:
+    /// it must not take focus, or actions dispatched through focus have
+    /// nowhere to go until something else is focused.
+    #[gpui::test]
+    fn an_empty_menu_leaves_focus_where_it_was(cx: &mut TestAppContext) {
+        cx.update(|cx| crate::init(cx));
+        let (root, cx) = cx.add_window_view(|window, cx| {
+            let content_focus = cx.focus_handle();
+            content_focus.focus(window, cx);
+            EmptyMenuRoot { content_focus }
+        });
+        let content_focus = root.read_with(cx, |root, _| root.content_focus.clone());
+        cx.update(|window, cx| {
+            window.draw(cx).clear(cx);
+        });
+
+        let press = point(px(50.), px(70.));
+        cx.simulate_mouse_down(press, MouseButton::Right, Default::default());
+        cx.simulate_mouse_up(press, MouseButton::Right, Default::default());
+        cx.run_until_parked();
+        cx.update(|window, cx| {
+            window.draw(cx).clear(cx);
+            assert_eq!(window.focused(cx).as_ref(), Some(&content_focus));
         });
     }
 

@@ -8,8 +8,9 @@ use crate::{Side, Size, kbd::Kbd};
 use gpui::{
     Action, Anchor, AnyElement, App, AppContext, Bounds, Context, DismissEvent, Edges, Entity,
     EventEmitter, FocusHandle, Focusable, InteractiveElement, IntoElement, KeyBinding,
-    ParentElement, Pixels, Render, Role, ScrollHandle, SharedString, StatefulInteractiveElement,
-    Styled, WeakEntity, Window, anchored, deferred, div, prelude::FluentBuilder, px, rems,
+    ParentElement, Pixels, Rems, Render, Role, ScrollHandle, SharedString,
+    StatefulInteractiveElement, Styled, WeakEntity, Window, anchored, deferred, div,
+    prelude::FluentBuilder, px, rems,
 };
 use gpui::{ClickEvent, Half, MouseDownEvent, OwnedMenuItem, Point, Subscription};
 use gpui_base::{LayoutDirection, LogicalStyledExt as _, TestSupportExt as _};
@@ -1459,6 +1460,7 @@ impl PopupMenu {
 
         let selected = self.selected_index == Some(ix);
         const EDGE_PADDING: Pixels = px(4.);
+        const INNER_PADDING: Rems = rems(0.5);
         let is_submenu = matches!(item, PopupMenuItem::Submenu { .. });
 
         let item_height = options.layout.row_height;
@@ -1822,6 +1824,7 @@ impl Render for PopupMenu {
 
         v_flex()
             .id("popup-menu")
+            .test_support()
             .role(Role::Menu)
             .key_context(CONTEXT)
             .track_focus(&self.focus_handle)
@@ -1859,27 +1862,30 @@ impl Render for PopupMenu {
                             // Ignore last separator
                             .filter(|(ix, item)| !(*ix + 1 == items_count && item.is_separator()))
                             .map(|(ix, item)| self.render_item(ix, item, options, window, cx)),
-                    )
-                    .on_prepaint(move |bounds, _, cx| {
-                        view.update(cx, |menu, cx| {
-                            let width_changed = menu.bounds.size.width != bounds.size.width;
-                            menu.bounds = bounds;
-                            if width_changed {
-                                if let Some(parent) = menu
-                                    .parent_menu
-                                    .as_ref()
-                                    .and_then(|parent| parent.upgrade())
-                                {
-                                    parent.update(cx, |_, cx| cx.notify());
-                                }
-                            }
-                        });
-                    }),
+                    ),
             )
+            // Measure on this element, not on the scrolling `items` container:
+            // the probe is a full-size absolute child, which would count as
+            // scrollable content there and, with the container's padding added
+            // on top, leave a menu that fits scrollable by that padding.
+            .on_prepaint(move |bounds, _, cx| {
+                view.update(cx, |menu, cx| {
+                    let width_changed = menu.bounds.size.width != bounds.size.width;
+                    menu.bounds = bounds;
+                    if width_changed {
+                        if let Some(parent) = menu
+                            .parent_menu
+                            .as_ref()
+                            .and_then(|parent| parent.upgrade())
+                        {
+                            parent.update(cx, |_, cx| cx.notify());
+                        }
+                    }
+                });
+            })
             .when(self.scrollable, |this| {
                 this.vertical_scrollbar(&self.scroll_handle)
             })
-            .test_support()
     }
 }
 
@@ -2079,5 +2085,22 @@ mod tests {
         );
         assert_eq!(PopupMenuItem::separator().a11y_label(), None);
         assert_eq!(PopupMenuItem::element(|_, _| div()).a11y_label(), None);
+    }
+
+    #[gpui::test]
+    fn scrollable_menu_that_fits_has_nothing_to_scroll(cx: &mut gpui::TestAppContext) {
+        cx.update(crate::init);
+        let (menu, cx) = cx.add_window_view(|_, cx| {
+            PopupMenu::new(cx)
+                .scrollable(true)
+                .item(PopupMenuItem::new("One"))
+                .item(PopupMenuItem::new("Two"))
+                .item(PopupMenuItem::new("Three"))
+        });
+        cx.update(|window, cx| window.draw(cx).clear(cx));
+
+        menu.read_with(cx, |menu, _| {
+            assert_eq!(menu.scroll_handle.max_offset(), gpui::Point::default());
+        });
     }
 }

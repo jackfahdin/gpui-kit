@@ -278,7 +278,7 @@ impl ShimmerGlyphs {
         let text_align = window.text_style().text_align;
         let mut line_origin = bounds.origin;
 
-        paint_compatible_layer(window, bounds, |window| {
+        let paint = |window: &mut Window| {
             for wrapped_line in layout.line_layouts() {
                 let line = &wrapped_line.unwrapped_layout;
                 let baseline_offset = point(
@@ -353,17 +353,12 @@ impl ShimmerGlyphs {
 
                 line_origin.y += wrapped_line.size(line_height).height;
             }
-        });
-    }
-}
-
-#[cfg(feature = "gpui-fast")]
-
-impl IntoElement for ShimmerGlyphs {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
+        };
+        // GPUI Fast keeps the layer bounds to record scroll layers.
+        #[cfg(feature = "gpui-fast")]
+        window.paint_layer(bounds, paint);
+        #[cfg(not(feature = "gpui-fast"))]
+        window.paint_layer(paint);
     }
 }
 
@@ -655,21 +650,5 @@ mod tests {
         assert_eq!(animation.duration, Duration::from_secs(3));
         assert!(animation.oneshot);
         assert!(!animation.synced);
-    }
-}
-
-// Native GPUI derives layer bounds from its primitives; the fast backend still
-// accepts an explicit clipping bound.
-fn paint_compatible_layer(
-    window: &mut Window,
-    bounds: Bounds<Pixels>,
-    paint: impl FnOnce(&mut Window),
-) {
-    #[cfg(feature = "gpui-fast")]
-    window.paint_layer(bounds, paint);
-    #[cfg(not(feature = "gpui-fast"))]
-    {
-        let _ = bounds;
-        window.paint_layer(paint);
     }
 }

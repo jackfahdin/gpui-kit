@@ -44,7 +44,7 @@ pub use token_presentation::{
     InlineTokenHoverListener, InlineTokenRenderer,
 };
 #[path = "base/a11y_text.rs"]
-mod a11y_text;
+pub(crate) mod a11y_text;
 #[path = "base/kind.rs"]
 mod kind;
 #[path = "editor/language.rs"]
@@ -53,6 +53,8 @@ mod language;
 pub mod language_config;
 #[path = "base/layout.rs"]
 mod layout;
+#[path = "editor/line_decorations.rs"]
+mod line_decorations;
 #[path = "editor/lsp/mod.rs"]
 mod lsp;
 #[path = "base/mask_pattern.rs"]
@@ -99,7 +101,7 @@ pub use diagnostics::{
     DiagnosticSummary, DiagnosticTag, RelatedInformation,
 };
 pub use display_map::{BufferPoint, DisplayMap, DisplayPoint, FoldRange, WrappingIndent};
-pub use editor::{Editor, EditorState};
+pub use editor::{Editor, EditorLineNumberRenderer, EditorState};
 pub use highlighting::{
     DiagnosticColors, FoldIconRenderer, FoldPlaceholderRenderer, HighlightStyleResolver,
     InputEditorStyle, InputHighlighter, InputHighlighterFactory, SharedHighlightStyleResolver,
@@ -115,6 +117,7 @@ pub(crate) use language::EditorLanguage;
 pub use language::{LanguageProvider, set_language_config, set_language_provider};
 pub(crate) use language_config::LanguageConfig;
 pub use language_config::{AutoClosingPair, BracketPair, IndentationRules};
+pub use line_decorations::{LineDecoration, LineDecorationCollection, LineDecorationProvider};
 pub use lsp::{
     CodeActionItem, CodeActionMenuState, CodeActionProvider, CompletionHighlighter,
     CompletionMenuOptions, CompletionMenuState, CompletionProvider, DefinitionProvider,

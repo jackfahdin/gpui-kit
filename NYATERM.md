@@ -1,5 +1,29 @@
 # NyaTerm fork notes
 
+## Upstream sync — 2026-11-25
+
+Rebase the concern-separated NyaTerm series onto longbridge/gpui-kit main
+`c9174d9d8c98642c6d19025f60d29552d859aa28` (87 new upstream commits).
+The previous published head `c3e573ae50640dffff9f9778efa1f0829e814f94`
+is preserved remotely as `backup/nyaterm-20261125-c3e573ae`.
+
+Upstream now supplies the native IntoElement, Path, paint-layer and async
+notification adaptations formerly carried by patch b5aa3382; omit that
+superseded patch. Preserve NyaTerm popup notification priority together with
+upstream dialog priority. Keep native overlays, input, menu and scrollbar
+patches. All six native Zed dependencies now pin
+`2bec6484a0f9ebe9cd49609fbb68a916f722362f`; refresh Cargo.lock to match.
+Initialize the added native-overlay hitbox field in the text-selection fixture.
+No persistent data formats change.
+
+Validation on Linux: gpui-base (1,813) and gpui-component (857) library tests
+passed with gpui-component/test-support and serialized execution. Library Clippy
+passed (one existing unused-constant warning); rustfmt corrected two layout-only
+differences after the rebase. Windows and
+macOS native acceptance were not available on this host. The consuming NyaTerm
+workspace validates the shared dependency graph before publishing nyaterm.
+
+
 ## 2026-11-19 size scrollable popup menus from the current window
 
 Use `Window::bounds()` for the default popup height limit. On Windows,
@@ -728,3 +752,17 @@ NyaTerm Linux desktop and native probe integration passed using these GPUI
 sources and unchanged component sources before this pin update. The consuming
 NyaTerm workspace will check the published pins and lock together; standalone
 component and Windows/macOS acceptance are not claimed here.
+
+## 2026-11-23 align native pointer-lock GPUI revision
+
+Move all six Zed pins from `468bc1eb8e31d8f802af766a4d2d74d2d08ea46a`
+to `5591fbd2d0ef56b9469e22216b9a91d833eb8282` on the `nyaterm` branch.
+This keeps GPUI Kit and NyaTerm on one GPUI type graph while the application
+adopts native relative pointer locking. Refresh the previously stale lockfile;
+no component source, public component API or persistent format changes.
+Validation: Windows x64 `cargo check -p gpui-kit --lib` passed with Rust 1.99.1;
+all six dependency pins and the lock agree, and `git diff --check` passed.
+
+同步六处 Zed 依赖版本，使 GPUI Kit 与 NyaTerm 使用同一套 GPUI 类型，
+供应用接入原生相对鼠标捕获。更新原有过期锁文件，不修改组件代码、公共
+组件接口或持久化格式。Windows x64 下使用 Rust 1.99.1 的上述编译检查通过。

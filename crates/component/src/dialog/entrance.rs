@@ -1,5 +1,3 @@
-#[cfg(any(feature = "gpui-fast", test))]
-use gpui::IntoElement;
 use gpui::{
     AnyElement, App, Bounds, Element, ElementId, GlobalElementId, InspectorElementId, LayoutId,
     Pixels, Window, point, px,
@@ -45,16 +43,6 @@ impl EntranceSurface {
             top_limit,
             progress: 0.,
         }
-    }
-}
-
-#[cfg(feature = "gpui-fast")]
-
-impl IntoElement for EntranceSurface {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
     }
 }
 
@@ -112,6 +100,7 @@ impl Element for EntranceSurface {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use gpui::IntoElement as _;
     use gpui::{
         Anchor, Context, InteractiveElement as _, ParentElement as _, Render,
         StatefulInteractiveElement as _, Styled as _, TestAppContext, div, size,
@@ -124,7 +113,7 @@ mod tests {
     }
 
     impl Render for SurfaceProbe {
-        fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+        fn render(&mut self, _: &mut Window, cx: &mut Context<Self>) -> impl gpui::IntoElement {
             let mut surface = EntranceSurface::new(
                 div()
                     .id("surface")

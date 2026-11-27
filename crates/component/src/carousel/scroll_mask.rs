@@ -3,8 +3,6 @@
 //! The mask is deliberately a sibling of the scrolled content.  A mask nested
 //! inside the content would receive the content's scroll offset and would stop
 //! covering the viewport after the first scroll.
-#[cfg(feature = "gpui-fast")]
-use gpui::IntoElement;
 
 use std::cell::RefCell;
 use std::panic::Location;
@@ -42,16 +40,6 @@ impl CarouselScrollMask {
 
     pub(super) fn id(mut self, id: impl Into<ElementId>) -> Self {
         self.id = id.into();
-        self
-    }
-}
-
-#[cfg(feature = "gpui-fast")]
-
-impl IntoElement for CarouselScrollMask {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
         self
     }
 }
@@ -271,8 +259,8 @@ mod tests {
     use std::{cell::Cell, rc::Rc};
 
     use gpui::{
-        AppContext as _, Axis, Context, Entity, InteractiveElement as _, Modifiers, MouseButton,
-        ParentElement as _, Render, ScrollDelta, ScrollEvent, ScrollHandle,
+        AppContext as _, Axis, Context, Entity, InteractiveElement as _, IntoElement, Modifiers,
+        MouseButton, ParentElement as _, Render, ScrollDelta, ScrollEvent, ScrollHandle,
         StatefulInteractiveElement as _, Styled as _, TestAppContext, TouchPhase,
         VisualTestContext, Window, div, point, px,
     };
@@ -290,7 +278,7 @@ mod tests {
     }
 
     impl Render for ButtonDragHarness {
-        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl gpui::IntoElement {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
             let clicks = self.clicks.clone();
             Carousel::new("button-drag-carousel", &self.state)
                 .w(px(100.))
@@ -366,7 +354,7 @@ mod tests {
     }
 
     impl Render for NestedVerticalCarouselHarness {
-        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl gpui::IntoElement {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
             div()
                 .id("outer-scroll")
                 .w(px(100.))

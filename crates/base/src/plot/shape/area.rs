@@ -1,11 +1,6 @@
-#[cfg(not(feature = "gpui-fast"))]
-use gpui::Path as PixelPath;
-#[cfg(feature = "gpui-fast")]
-type PixelPath = gpui::Path<gpui::Pixels>;
-
 // @reference: https://d3js.org/d3-shape/area
 
-use gpui::{Background, Bounds, PathBuilder, Pixels, Point, Window, px};
+use gpui::{Background, Bounds, Path, PathBuilder, Pixels, Point, Window, px};
 
 use crate::plot::{Curve, PathCache, ShapeKey, origin_point};
 
@@ -91,7 +86,7 @@ impl<T> Area<T> {
         self
     }
 
-    fn path(&self, bounds: &Bounds<Pixels>) -> (Option<PixelPath>, Option<PixelPath>) {
+    fn path(&self, bounds: &Bounds<Pixels>) -> (Option<Path>, Option<Path>) {
         let origin = bounds.origin;
         let mut area_builder = PathBuilder::fill();
         let mut line_builder = PathBuilder::stroke(px(1.));
@@ -201,17 +196,16 @@ impl<T> Area<T> {
             }
         }
         let key = key.finish();
-        let local = Bounds::new(Point::default(), bounds.size);
         // One miss builds both paths; the second cache takes the stroke from
         // the stash instead of building again.
         let mut stroke_path = None;
         let fill_path = fill.get(key, bounds.origin, || {
-            let (area, stroke) = self.path(&local);
+            let (area, stroke) = self.path(bounds);
             stroke_path = Some(stroke);
             area
         });
         let line_path = line.get(key, bounds.origin, || {
-            stroke_path.take().unwrap_or_else(|| self.path(&local).1)
+            stroke_path.take().unwrap_or_else(|| self.path(bounds).1)
         });
         if let Some(area) = fill_path {
             window.paint_path(area, self.fill);

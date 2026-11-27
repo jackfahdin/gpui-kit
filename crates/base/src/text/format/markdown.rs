@@ -16,11 +16,72 @@ use crate::text::{
     },
 };
 
+/// Run the `markdown` parser, catching a panic inside it.
+///
+/// `markdown` 1.0.0 panics on some inputs (wooorm/markdown-rs#275), and the
+/// text being parsed often comes from outside the app, so the panic must not
+/// take the app down. Nothing the parser holds outlives the call. Returns
+/// `None` when the parser panicked.
+fn to_mdast(source: &str, options: &ParseOptions) -> Option<Result<Node, SharedString>> {
+    std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        markdown::to_mdast(source, options)
+    }))
+    .ok()
+    .map(|result| result.map_err(|e| SharedString::from(e.to_string())))
+}
+
+/// A tree that shows `source` as plain text, one paragraph keeping its line
+/// breaks, for a source the parser can't handle.
+fn plain_text_root(source: &str) -> Node {
+    let mut children = Vec::new();
+    let mut offset = 0;
+    for (index, line) in source.split('\n').enumerate() {
+        let row = index + 1;
+        if index > 0 {
+            children.push(Node::Break(mdast::Break {
+                position: Some(markdown::unist::Position::new(
+                    row - 1,
+                    0,
+                    offset - 1,
+                    row,
+                    1,
+                    offset,
+                )),
+            }));
+        }
+        let end = offset + line.len();
+        if !line.is_empty() {
+            children.push(Node::Text(mdast::Text {
+                value: line.to_string(),
+                position: Some(markdown::unist::Position::new(
+                    row,
+                    1,
+                    offset,
+                    row,
+                    line.chars().count() + 1,
+                    end,
+                )),
+            }));
+        }
+        offset = end + 1;
+    }
+    let position = markdown::unist::Position::new(1, 1, 0, 1, 1, source.len());
+    Node::Root(mdast::Root {
+        children: vec![Node::Paragraph(mdast::Paragraph {
+            children,
+            position: Some(position.clone()),
+        })],
+        position: Some(position),
+    })
+}
+
 /// Parse Markdown into a tree of nodes.
 pub(crate) fn parse(source: &str, cx: &mut NodeContext) -> Result<ParsedDocument, SharedString> {
     let options = cx.markdown_extensions.parse_options();
-    let mut root =
-        markdown::to_mdast(source, &options).map_err(|e| SharedString::from(e.to_string()))?;
+    let mut root = match to_mdast(source, &options) {
+        Some(result) => result?,
+        None => return Ok(ast_to_document(source, plain_text_root(source), cx)),
+    };
     let mut prose = options;
     prose.constructs.math_text = false;
     prose.constructs.math_flow = false;
@@ -75,7 +136,7 @@ fn reparse_as_prose(node: &Node, source: &str, options: &ParseOptions) -> Option
     if !may_hold_inline_markup(literal) {
         return None;
     }
-    let Ok(Node::Root(mut root)) = markdown::to_mdast(literal, options) else {
+    let Some(Ok(Node::Root(mut root))) = to_mdast(literal, options) else {
         return None;
     };
     let [Node::Paragraph(paragraph)] = root.children.as_mut_slice() else {
@@ -1442,6 +1503,19 @@ fn ast_to_node(source: &str, value: mdast::Node, cx: &mut NodeContext) -> BlockN
 mod tests {
     use super::*;
     use gpui::ParentElement;
+
+    #[test]
+    fn parser_panic_falls_back_to_plain_text() {
+        // markdown 1.0.0 panics on this input (wooorm/markdown-rs#275).
+        let source = "a\n===\n---\nb\n===";
+        let document = parse(source, &mut NodeContext::default()).expect("parse");
+        assert_eq!(document.source.as_ref(), source);
+        let [BlockNode::Paragraph(paragraph)] = document.blocks.as_slice() else {
+            panic!("expected one paragraph, got {:?}", document.blocks);
+        };
+        let text: String = paragraph.children.iter().map(|c| c.text.as_ref()).collect();
+        assert_eq!(text, "a\n===\n---\nb\n===");
+    }
 
     use crate::text::{MarkdownExtensions, MarkdownNode, MarkdownPlugin};
 
@@ -2841,6 +2915,45 @@ mod tests {
         };
         let document = parse("area $x^2$ costs $5 and $10", &mut cx).unwrap();
         assert_eq!(document.text(), "area [x^2] costs [5 and ]10\n");
+    }
+
+    #[test]
+    fn raw_html_off_keeps_html_as_text() {
+        let source = "a <b>bold</b> <img src=\"https://example.com/x.png\"> <https://example.com>\n\n<div>block</div>";
+
+        let mut cx = NodeContext::default();
+        let document = parse(source, &mut cx).unwrap();
+        let BlockNode::Paragraph(paragraph) = &document.blocks[0] else {
+            panic!("expected paragraph");
+        };
+        assert_eq!(bold_runs(paragraph), ["bold"]);
+
+        let mut cx = NodeContext {
+            markdown_extensions: Arc::new(MarkdownExtensions::default().raw_html(false)),
+            ..Default::default()
+        };
+        let document = parse(source, &mut cx).unwrap();
+        let BlockNode::Paragraph(paragraph) = &document.blocks[0] else {
+            panic!("expected paragraph");
+        };
+        let text = paragraph.text();
+        assert!(
+            text.starts_with(r#"a <b>bold</b> <img src="https://example.com/x.png"> "#),
+            "{text}"
+        );
+        assert!(bold_runs(paragraph).is_empty());
+        assert!(paragraph.children.iter().all(|child| child.image.is_none()));
+        assert!(
+            paragraph
+                .children
+                .iter()
+                .any(|child| child.marks.iter().any(|(_, mark)| mark.link.is_some())),
+            "an autolink is not HTML and stays a link"
+        );
+        let BlockNode::Paragraph(block) = &document.blocks[1] else {
+            panic!("expected the HTML block as a paragraph");
+        };
+        assert_eq!(block.text(), "<div>block</div>");
     }
 
     #[test]

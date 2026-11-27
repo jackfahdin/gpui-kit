@@ -191,6 +191,9 @@ impl WindowState {
             _ => (None, None, None, None),
         };
 
+        // Base dialogs are deferred at 10 + their layer index. Defer the whole
+        // notification stack after every dialog, including embedded Base forms.
+        let priority = 11 + root.read(cx).active_dialogs.len();
         // Keep toasts out from under the system bars and the on-screen keyboard.
         let safe_insets = window_border::window_safe_insets(window);
 
@@ -213,7 +216,7 @@ impl WindowState {
                             .child(root.read(cx).notification.clone()),
                     ),
             )
-            .with_priority(NOTIFICATION_PRIORITY),
+            .with_priority(priority.max(NOTIFICATION_PRIORITY)),
         )
     }
 

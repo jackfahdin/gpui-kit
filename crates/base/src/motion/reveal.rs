@@ -1,5 +1,3 @@
-#[cfg(feature = "gpui-fast")]
-use gpui::IntoElement;
 use gpui::{
     AnyElement, App, AvailableSpace, Bounds, ContentMask, Element, ElementId, GlobalElementId,
     InspectorElementId, LayoutId, Pixels, Style, Window, px, relative, size,
@@ -24,16 +22,6 @@ impl MotionReveal {
             progress: progress.clamp(0.0, 1.0),
             child,
         }
-    }
-}
-
-#[cfg(feature = "gpui-fast")]
-
-impl IntoElement for MotionReveal {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
     }
 }
 

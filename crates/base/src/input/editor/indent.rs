@@ -1,15 +1,11 @@
-#[cfg(not(feature = "gpui-fast"))]
-use gpui::Path as PixelPath;
-#[cfg(feature = "gpui-fast")]
-type PixelPath = gpui::Path<gpui::Pixels>;
-
-use crate::input::InputModeKind;
+use crate::input::{EditorLineNumberRenderer, InputModeKind};
 use crate::input::{
     Indent, IndentInline, InputBaseState, Outdent, OutdentInline, RopeExt, cursor::CursorSelection,
     element::TextElement, layout::LastLayout, mode::LayoutMode,
 };
 use gpui::{
-    Bounds, Context, Hsla, PathBuilder, Pixels, SharedString, TextRun, TextStyle, Window, point, px,
+    Bounds, Context, Hsla, Path, PathBuilder, Pixels, SharedString, TextRun, TextStyle, Window,
+    point, px,
 };
 use ropey::RopeSlice;
 
@@ -88,7 +84,7 @@ impl LayoutMode {
     }
 }
 
-impl<M: InputModeKind> TextElement<M> {
+impl<M: InputModeKind, R: EditorLineNumberRenderer> TextElement<M, R> {
     /// Measure the indent width in pixels for given column count.
     fn measure_indent_width(&self, style: &TextStyle, column: usize, window: &Window) -> Pixels {
         let font_size = style.font_size.to_pixels(window.rem_size());
@@ -116,7 +112,7 @@ impl<M: InputModeKind> TextElement<M> {
         last_layout: &LastLayout,
         text_style: &TextStyle,
         window: &mut Window,
-    ) -> Option<PixelPath> {
+    ) -> Option<Path> {
         if !state.is_multi_line() || !state.mode.has_indent_guides() {
             return None;
         }
@@ -127,7 +123,7 @@ impl<M: InputModeKind> TextElement<M> {
         let tab_size = state.mode.tab_size();
         let line_height = last_layout.line_height;
         let mut builder = PathBuilder::stroke(px(1.));
-        let mut offset_y = last_layout.visible_top;
+        let mut row_offset: isize = 0;
         let mut last_indents = vec![];
 
         for (&buffer_line, line_layout) in last_layout
@@ -135,6 +131,7 @@ impl<M: InputModeKind> TextElement<M> {
             .iter()
             .zip(last_layout.lines.iter())
         {
+            let offset_y = last_layout.local_row_y(row_offset);
             let line = state.text.slice_line(buffer_line);
             let mut current_indents = vec![];
             if line.len() > 0 {
@@ -161,7 +158,7 @@ impl<M: InputModeKind> TextElement<M> {
                 current_indents = last_indents.clone();
             }
 
-            offset_y += line_layout.wrapped_lines.len() * line_height;
+            row_offset += line_layout.wrapped_lines.len() as isize;
             last_indents = current_indents;
         }
 

@@ -1,5 +1,3 @@
-#[cfg(feature = "gpui-fast")]
-use gpui::IntoElement;
 use std::ops::Range;
 
 use gpui::{
@@ -8,7 +6,9 @@ use gpui::{
     SharedString, StyledText, Subscription, TextStyleRefinement, Window, transparent_black,
 };
 
-use crate::{TextSelectionHandle, TextSelectionRegistration, TextSelectionRun};
+use crate::{
+    TextSelectionHandle, TextSelectionRegistration, TextSelectionRun, text::RevealHandlerFn,
+};
 
 /// Plain text that participates in the window-scoped [`TextSelection`](crate::TextSelection).
 ///
@@ -26,7 +26,13 @@ pub struct SelectableText {
     document_order: u64,
     text_style: Option<TextStyleRefinement>,
     selection_color: Option<Hsla>,
+    reveal_range: Option<Range<usize>>,
+    reveal_handler: Option<Box<RevealHandlerFn>>,
 }
+
+/// The range last revealed by a [`SelectableText`], so a reveal only runs
+/// when the requested range changes.
+struct RevealedRange(Range<usize>);
 
 impl SelectableText {
     /// Creates a run that owns its own selection.
@@ -52,6 +58,8 @@ impl SelectableText {
             document_order: 0,
             text_style: None,
             selection_color: None,
+            reveal_range: None,
+            reveal_handler: None,
         }
     }
 
@@ -83,6 +91,61 @@ impl SelectableText {
     pub fn selection_color(mut self, color: Hsla) -> Self {
         self.selection_color = Some(color);
         self
+    }
+
+    /// Request that the visual line containing the start of this UTF-8 byte
+    /// range scroll into view. The line is revealed once when the range is
+    /// first supplied or changes, matching `TextViewState::reveal_range`, so
+    /// the user can scroll away afterwards. Invalid ranges are ignored.
+    pub fn reveal_range(mut self, range: Range<usize>) -> Self {
+        self.reveal_range = Some(range);
+        self
+    }
+
+    /// Receive the requested line's bounds in window coordinates during
+    /// prepaint, for containers that manage scrolling through a custom handle.
+    /// Without a handler, the element requests GPUI autoscroll.
+    pub fn on_reveal(
+        mut self,
+        handler: impl Fn(Bounds<Pixels>, &mut Window, &mut App) + 'static,
+    ) -> Self {
+        self.reveal_handler = Some(Box::new(handler));
+        self
+    }
+
+    fn reveal(
+        &self,
+        global_id: Option<&GlobalElementId>,
+        bounds: Bounds<Pixels>,
+        window: &mut Window,
+        cx: &mut App,
+    ) {
+        let (Some(range), Some(global_id)) = (self.reveal_range.as_ref(), global_id) else {
+            return;
+        };
+        if self.text.get(range.clone()).is_none() {
+            return;
+        }
+        let changed = window.with_element_state(global_id, |revealed: Option<RevealedRange>, _| {
+            let changed = revealed.is_none_or(|revealed| revealed.0 != *range);
+            (changed, RevealedRange(range.clone()))
+        });
+        if !changed {
+            return;
+        }
+        let layout = self.styled_text.layout();
+        let Some(position) = layout.position_for_index(range.start) else {
+            return;
+        };
+        let line = Bounds::new(
+            gpui::point(bounds.left(), position.y),
+            gpui::size(bounds.size.width, layout.line_height()),
+        );
+        if let Some(handler) = self.reveal_handler.as_ref() {
+            handler(line, window, cx);
+        } else {
+            window.request_autoscroll(line);
+        }
     }
 
     fn paint_selection(
@@ -145,16 +208,6 @@ fn selection_quad_bounds(
         Point::new(end.x, end.y + line_height),
     ));
     quads
-}
-
-#[cfg(feature = "gpui-fast")]
-
-impl IntoElement for SelectableText {
-    type Element = Self;
-
-    fn into_element(self) -> Self::Element {
-        self
-    }
 }
 
 impl Element for SelectableText {
@@ -221,6 +274,7 @@ impl Element for SelectableText {
             .with_text_bounds(vec![bounds])
             .with_rendered_element(handle, window, cx);
         handle.register(registration, window, cx);
+        self.reveal(global_id, bounds, window, cx);
         hitbox
     }
 
@@ -269,8 +323,8 @@ mod tests {
     use std::{cell::Cell, rc::Rc};
 
     use gpui::{
-        AppContext as _, Bounds, Context, IntoElement as _, Modifiers, MouseButton,
-        ParentElement as _, Render, Styled as _, TestAppContext, Window, div, point, px, size,
+        AppContext as _, Bounds, Context, IntoElement, Modifiers, MouseButton, ParentElement as _,
+        Render, Styled as _, TestAppContext, Window, div, point, px, size,
     };
 
     use super::SelectableText;
@@ -279,7 +333,7 @@ mod tests {
     struct SelectableTextTestView;
 
     impl Render for SelectableTextTestView {
-        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl gpui::IntoElement {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
             div().size_full().child(TextSelectionLayer).child(
                 div()
                     .w(px(240.))
@@ -328,7 +382,7 @@ mod tests {
     struct HighlightedTestView;
 
     impl Render for HighlightedTestView {
-        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl gpui::IntoElement {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
             let mark = gpui::HighlightStyle {
                 background_color: Some(gpui::red()),
                 font_weight: Some(gpui::FontWeight::BOLD),
@@ -371,12 +425,82 @@ mod tests {
         });
     }
 
+    struct RevealTestView {
+        first: Rc<Cell<Option<Bounds<gpui::Pixels>>>>,
+        last: Rc<Cell<Option<Bounds<gpui::Pixels>>>>,
+        invalid: Rc<Cell<Option<Bounds<gpui::Pixels>>>>,
+    }
+
+    impl Render for RevealTestView {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
+            let text = "é alpha beta gamma delta epsilon";
+            let reveal = |id, range, observed: Rc<Cell<_>>| {
+                div().w(px(80.)).child(
+                    SelectableText::new(id, text)
+                        .reveal_range(range)
+                        .on_reveal(move |bounds, _, _| observed.set(Some(bounds))),
+                )
+            };
+            div()
+                .flex()
+                .items_start()
+                .child(TextSelectionLayer)
+                .child(reveal("first", 0..2, self.first.clone()))
+                .child(reveal("last", 26..33, self.last.clone()))
+                .child(reveal("invalid", 1..2, self.invalid.clone()))
+        }
+    }
+
+    #[gpui::test]
+    fn reveal_reports_the_wrapped_line_and_ignores_invalid_utf8(cx: &mut TestAppContext) {
+        let first = Rc::new(Cell::new(None));
+        let last = Rc::new(Cell::new(None));
+        let invalid = Rc::new(Cell::new(None));
+        let (_, cx) = cx.add_window_view(|_, _| RevealTestView {
+            first: first.clone(),
+            last: last.clone(),
+            invalid: invalid.clone(),
+        });
+        cx.update(|window, cx| {
+            let _ = window.draw(cx);
+        });
+
+        let first = first.get().expect("first line bounds");
+        let last = last.get().expect("last line bounds");
+        assert!(last.top() >= first.bottom());
+        assert_eq!(last.size.height, first.size.height);
+        assert_eq!(invalid.get(), None);
+    }
+
+    #[gpui::test]
+    fn reveal_runs_once_per_range(cx: &mut TestAppContext) {
+        let first = Rc::new(Cell::new(None));
+        let last = Rc::new(Cell::new(None));
+        let invalid = Rc::new(Cell::new(None));
+        let (view, cx) = cx.add_window_view(|_, _| RevealTestView {
+            first: first.clone(),
+            last: last.clone(),
+            invalid: invalid.clone(),
+        });
+        cx.update(|window, cx| {
+            let _ = window.draw(cx);
+        });
+        assert!(first.take().is_some());
+
+        // Redrawing with the same range must not reveal again.
+        cx.update(|window, cx| {
+            view.update(cx, |_, cx| cx.notify());
+            let _ = window.draw(cx);
+        });
+        assert_eq!(first.get(), None);
+    }
+
     struct CachedText {
         renders: Rc<Cell<usize>>,
     }
 
     impl Render for CachedText {
-        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl gpui::IntoElement {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
             self.renders.set(self.renders.get() + 1);
             SelectableText::new("local", "alpha beta")
         }
@@ -387,7 +511,7 @@ mod tests {
     }
 
     impl Render for CachedTextParent {
-        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl gpui::IntoElement {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
             div().size_full().child(TextSelectionLayer).child(
                 gpui::AnyView::from(self.text.clone())
                     .cached(gpui::StyleRefinement::default().w(px(240.)).h(px(32.))),
@@ -442,7 +566,7 @@ mod tests {
     }
 
     impl Render for CopyCallbackTestView {
-        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl gpui::IntoElement {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
             div()
                 .size_full()
                 .child(TextSelectionLayer)
@@ -516,7 +640,7 @@ mod tests {
     }
 
     impl Render for ControlView {
-        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl gpui::IntoElement {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
             use crate::ElementExt as _;
             self.renders.set(self.renders.get() + 1);
             div().w(px(60.)).h(px(20.)).keep_text_selection("control")
@@ -524,7 +648,7 @@ mod tests {
     }
 
     impl Render for ControlTestView {
-        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl gpui::IntoElement {
+        fn render(&mut self, _: &mut Window, _: &mut Context<Self>) -> impl IntoElement {
             let control = gpui::AnyView::from(self.control.clone());
             let control = if self.cached {
                 control
